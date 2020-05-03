@@ -1,6 +1,9 @@
 /*
 Semestre 2020-2
-Animación por keyframes
+AnimaciÃ³n por keyframes
+Alumnos:
+
+Vega LÃ³pez AmÃ³s Manuel
 */
 //para cargar imagen
 #define STB_IMAGE_IMPLEMENTATION
@@ -24,7 +27,7 @@ Animación por keyframes
 #include "Shader_light.h"
 #include "Camera.h"
 #include "Texture.h"
-//para iluminación
+//para iluminaciÃ³n
 #include "CommonValues.h"
 #include "DirectionalLight.h"
 #include "PointLight.h"
@@ -97,7 +100,7 @@ static const char* vShader = "shaders/shader_light.vert";
 
 // Fragment Shader
 static const char* fShader = "shaders/shader_light.frag";
-//cálculo del promedio de las normales para sombreado de Phong
+//cÃ¡lculo del promedio de las normales para sombreado de Phong
 void calcAverageNormals(unsigned int * indices, unsigned int indiceCount, GLfloat * vertices, unsigned int verticeCount, 
 						unsigned int vLength, unsigned int normalOffset)
 {
@@ -362,7 +365,7 @@ void animate(void)
 			}
 			else //Next frame interpolations
 			{
-				//printf("entro aquí\n");
+				//printf("entro aquÃ­\n");
 				i_curr_steps = 0; //Reset counter
 				//Interpolation
 				interpolation();
@@ -370,7 +373,7 @@ void animate(void)
 		}
 		else
 		{
-			//printf("se quedó aqui\n");
+			//printf("se quedÃ³ aqui\n");
 			//printf("max steps: %f", i_max_steps);
 			//Draw animation
 			movAvion_x += KeyFrame[playIndex].movAvion_xInc;
@@ -437,13 +440,13 @@ int main()
 	Luminaria_M.LoadModel("Models/Luminaria.obj");
 	Tree_M = Model();
 	Tree_M.LoadModel("Models/Tree.obj");
-	//luz direccional, sólo 1 y siempre debe de existir
+	//luz direccional, sÃ³lo 1 y siempre debe de existir
 	mainLight = DirectionalLight(1.0f, 1.0f, 1.0f, 
 								0.3f, 0.3f,
 								0.0f, 0.0f, -1.0f);
 //contador de luces puntuales
 	unsigned int pointLightCount = 0;
-	//Declaración de primer luz puntual
+	//DeclaraciÃ³n de primer luz puntual
 	pointLights[0] = PointLight(1.0f, 1.0f, 1.0f,
 								0.3f, 1.0f,
 								4.0f, 7.0f, -13.2f,
@@ -560,7 +563,7 @@ int main()
 	KeyFrame[4].movAvion_y = 0.0f;
 	KeyFrame[4].giroAvion = 0.0f;
 	
-	//Agregar Kefyrame[5] para que el avión regrese al inicio
+	//Agregar Kefyrame[5] para que el aviÃ³n regrese al inicio
 	KeyFrame[5].movAvion_x = 5.0f;
 	KeyFrame[5].movAvion_y = 2.0f;
 	KeyFrame[5].giroAvion = 0.0f;
@@ -854,7 +857,7 @@ int main()
 		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		Tree_M.RenderModel();
 
-		//Agave ¿qué sucede si lo renderizan antes del coche y de la pista?
+		//Agave Â¿quÃ© sucede si lo renderizan antes del coche y de la pista?
 		//model = glm::mat4(1.0);
 		//model = glm::translate(model, glm::vec3(0.0f, -1.7f, -2.0f));
 		//model = glm::scale(model, glm::vec3(0.5f, 0.5f, 0.5f));
@@ -892,7 +895,7 @@ void inputKeyframes(bool* keys)
 				playIndex = 0;
 				i_curr_steps = 0;
 				reproduciranimacion++;
-				printf("presiona 0 para habilitar reproducir de nuevo la animación'\n");
+				printf("presiona 0 para habilitar reproducir de nuevo la animaciÃ³n'\n");
 				habilitaranimacion = 0;
 
 			}
