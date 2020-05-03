@@ -1,9 +1,6 @@
 /*
 Semestre 2020-2
-Animaci√≥n por keyframes
-Alumnos:
-
-Vega L√≥pez Am√≥s Manuel
+AnimaciÛn por keyframes
 */
 //para cargar imagen
 #define STB_IMAGE_IMPLEMENTATION
@@ -27,7 +24,7 @@ Vega L√≥pez Am√≥s Manuel
 #include "Shader_light.h"
 #include "Camera.h"
 #include "Texture.h"
-//para iluminaci√≥n
+//para iluminaciÛn
 #include "CommonValues.h"
 #include "DirectionalLight.h"
 #include "PointLight.h"
@@ -80,6 +77,11 @@ Model Reja_M;
 Model Banca_M;
 Model Luminaria_M;
 Model Tree_M;
+Model Bush_M;
+Model shortTree_M;
+Model greenBin_M;
+Model grayBin_M;
+Model esquinaRejas_M;
 
 Skybox skybox;
 Skybox skybox_Dia;
@@ -100,7 +102,7 @@ static const char* vShader = "shaders/shader_light.vert";
 
 // Fragment Shader
 static const char* fShader = "shaders/shader_light.frag";
-//c√°lculo del promedio de las normales para sombreado de Phong
+//c·lculo del promedio de las normales para sombreado de Phong
 void calcAverageNormals(unsigned int * indices, unsigned int indiceCount, GLfloat * vertices, unsigned int verticeCount, 
 						unsigned int vLength, unsigned int normalOffset)
 {
@@ -365,7 +367,7 @@ void animate(void)
 			}
 			else //Next frame interpolations
 			{
-				//printf("entro aqu√≠\n");
+				//printf("entro aquÌ\n");
 				i_curr_steps = 0; //Reset counter
 				//Interpolation
 				interpolation();
@@ -373,7 +375,7 @@ void animate(void)
 		}
 		else
 		{
-			//printf("se qued√≥ aqui\n");
+			//printf("se quedÛ aqui\n");
 			//printf("max steps: %f", i_max_steps);
 			//Draw animation
 			movAvion_x += KeyFrame[playIndex].movAvion_xInc;
@@ -440,19 +442,29 @@ int main()
 	Luminaria_M.LoadModel("Models/Luminaria.obj");
 	Tree_M = Model();
 	Tree_M.LoadModel("Models/Tree.obj");
-	//luz direccional, s√≥lo 1 y siempre debe de existir
+	Bush_M = Model();
+	Bush_M.LoadModel("Models/Bush.obj");
+	shortTree_M = Model();
+	shortTree_M.LoadModel("Models/ShortTree.obj");
+	greenBin_M = Model();
+	greenBin_M.LoadModel("Models/Basura_Verde.obj");
+	grayBin_M = Model();
+	grayBin_M.LoadModel("Models/Basura_Gris.obj");
+	esquinaRejas_M = Model();
+	esquinaRejas_M.LoadModel("Models/EsquinaRejas.obj");
+	//luz direccional, sÛlo 1 y siempre debe de existir
 	mainLight = DirectionalLight(1.0f, 1.0f, 1.0f, 
 								0.3f, 0.3f,
 								0.0f, 0.0f, -1.0f);
 //contador de luces puntuales
 	unsigned int pointLightCount = 0;
-	//Declaraci√≥n de primer luz puntual
+	//DeclaraciÛn de primer luz puntual
 	pointLights[0] = PointLight(1.0f, 1.0f, 1.0f,
 								0.3f, 1.0f,
-								4.0f, 7.0f, -13.2f,
-								0.0f, 0.2f, 0.1f);
+								4.0f, 7.0f, -19.2f,
+								0.0f, 0.05f, 0.1f);
 	pointLightCount++;
-	
+	//4.0f, 0.0f, (-6.4f - 1 * (3.2f))
 	unsigned int spotLightCount = 0;
 
 
@@ -563,7 +575,7 @@ int main()
 	KeyFrame[4].movAvion_y = 0.0f;
 	KeyFrame[4].giroAvion = 0.0f;
 	
-	//Agregar Kefyrame[5] para que el avi√≥n regrese al inicio
+	//Agregar Kefyrame[5] para que el aviÛn regrese al inicio
 	KeyFrame[5].movAvion_x = 5.0f;
 	KeyFrame[5].movAvion_y = 2.0f;
 	KeyFrame[5].giroAvion = 0.0f;
@@ -698,18 +710,24 @@ int main()
 		//skybox.DrawSkybox(camera.calculateViewMatrix(), projection);
 		//
 		//Cambio de dia y noche
-		tiempo_Dia++;
-		printf("%f \n", tiempo_Dia);
-		if (tiempo_Dia <= 5000.0f) {
-			skybox_Dia.DrawSkybox(camera.calculateViewMatrix(), projection);
-		}
-		if (tiempo_Dia > 5000.0f) {
+		
+		//
+		luzSol = ((sin(15 * uniTime * toRadians) + 1.0f) / 2) * 0.6f + 0.07f;
+
+		mainLight = DirectionalLight(luzSol, luzSol, luzSol,
+			0.9f, 0.9f,
+			0.0f, -1.0f, 0.0f);
+
+		if (luzSol <= 0.3)
+		{
+			pointLightCount = 1;
 			skybox_Noche.DrawSkybox(camera.calculateViewMatrix(), projection);
 		}
-		if (tiempo_Dia >= 10000.0) {
-			tiempo_Dia = 0.0f;
+		else
+		{
+			skybox_Dia.DrawSkybox(camera.calculateViewMatrix(), projection);
+			pointLightCount = 0;
 		}
-		//
 
 		shaderList[0].UseShader();
 		uniformModel = shaderList[0].GetModelLocation();
@@ -722,15 +740,22 @@ int main()
 		glm::vec3 lowerLight = camera.getCameraPosition();
 		lowerLight.y -= 0.3f;
 		//spotLights[0].SetFlash(lowerLight, camera.getCameraDirection());
-		luzSol = ((sin(15*uniTime*toRadians) + 1.0f) / 2)*0.5f + 0.1f;
-		mainLight = DirectionalLight(luzSol, luzSol, luzSol,
-			0.9f, 0.9f,
-			0.0f, -1.0f, 0.0f);
+		
 
-		if (luzSol <= 0.4)
-			pointLightCount = 1;
-		else
-			pointLightCount = 0;
+		/*tiempo_Dia++;
+		printf("%f \n", tiempo_Dia);
+
+		if (tiempo_Dia <= 5000.0f) {
+			skybox_Dia.DrawSkybox(camera.calculateViewMatrix(), projection);
+		}
+		if (tiempo_Dia > 5000.0f) {
+			skybox_Noche.DrawSkybox(camera.calculateViewMatrix(), projection);
+		}
+		if (tiempo_Dia >= 10000.0) {
+			tiempo_Dia = 0.0f;
+		}*/
+
+		
 		shaderList[0].SetDirectionalLight(&mainLight);
 		shaderList[0].SetPointLights(pointLights, pointLightCount);
 		shaderList[0].SetSpotLights(spotLights, spotLightCount);
@@ -784,28 +809,60 @@ int main()
 		//Camino_M.RenderModel();
 
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(0.0f, 0.0f, -10.0f));
+		model = glm::translate(model, glm::vec3(0.0f, 0.0f, -6.4f+0.8f));
+		//model = glm::rotate(model, -90.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		esquinaRejas_M.RenderModel();
+
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(-0.8f - 1*3.2f, 0.0f, -6.4f + 0.8f));
+		model = glm::rotate(model, -90.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		Reja_M.RenderModel();
 
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(0.0f, 0.0f, (-10.0f - 1*(3.2f))));
+		model = glm::translate(model, glm::vec3(-0.8f - 2 * 3.2f, 0.0f, -6.4f + 0.8f));
+		model = glm::rotate(model, -90.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		Reja_M.RenderModel();
 
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(0.0f, 0.0f, (-10.0f - 2 * (3.2f))));
+		model = glm::translate(model, glm::vec3(-0.8f - 3 * 3.2f, 0.0f, -6.4f + 0.8f));
+		model = glm::rotate(model, -90.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		Reja_M.RenderModel();
+
+		/*model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(0.0f, 0.0f, -6.4f));
+		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		Reja_M.RenderModel();*/
+
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(0.0f, 0.0f, (-6.4f - 1*(3.2f))));
 		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		Reja_M.RenderModel();
 
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(0.0f, 0.0f, (-10.0f - 3 * (3.2f))));
+		model = glm::translate(model, glm::vec3(0.0f, 0.0f, (-6.4f - 2 * (3.2f))));
+		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		Reja_M.RenderModel();
+
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(0.0f, 0.0f, (-6.4f - 3 * (3.2f))));
 		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
@@ -813,28 +870,56 @@ int main()
 
 
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(0.0f, 0.0f, (-10.0f - 4 * (3.2f))));
+		model = glm::translate(model, glm::vec3(0.0f, 0.0f, (-6.4f - 4 * (3.2f))));
 		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		Reja_M.RenderModel();
 
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(0.0f, 0.0f, (-10.0f - 5 * (3.2f))));
+		model = glm::translate(model, glm::vec3(0.0f, 0.0f, (-6.4f - 5 * (3.2f))));
 		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		Reja_M.RenderModel();
 
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(0.0f, 0.0f, (-10.0f - 6 * (3.2f))));
+		model = glm::translate(model, glm::vec3(0.0f, 0.0f, (-6.4f - 6 * (3.2f))));
 		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		Reja_M.RenderModel();
 
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(4.0f, 0.0f, (-10.0f - 2 * (3.2f))));
+		model = glm::translate(model, glm::vec3(0.0f, 0.0f, (-6.4f - 7 * (3.2f))));
+		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		Reja_M.RenderModel();
+
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(0.0f, 0.0f, (-6.4f - 8 * (3.2f))));
+		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		Reja_M.RenderModel();
+
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(0.0f, 0.0f, (-6.4f - 9 * (3.2f))));
+		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		Reja_M.RenderModel();
+
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(0.0f, 0.0f, (-6.4f - 10 * (3.2f))));
+		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		Reja_M.RenderModel();
+
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(4.0f, 0.0f, (-6.4f - 2 * (3.2f))));
 		model = glm::rotate(model, 90.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -842,7 +927,23 @@ int main()
 		Banca_M.RenderModel();
 
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(4.0f, 0.0f, (-10.0f - 1 * (3.2f))));
+		model = glm::translate(model, glm::vec3(4.0f, 0.0f, (-6.4f - 1 * (3.2f))));
+		model = glm::rotate(model, 90.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		greenBin_M.RenderModel();
+
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(4.0f, 0.0f, (-6.4f - 1 * (3.2f) + 2.0f)));
+		model = glm::rotate(model, 90.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		grayBin_M.RenderModel();
+
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(4.0f, 0.0f, (-6.4f - 4 * (3.2f))));
 		model = glm::rotate(model, 90.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -850,14 +951,30 @@ int main()
 		Luminaria_M.RenderModel();
 
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(-4.0f, 0.0f, (-10.0f - 2 * (3.2f))));
+		model = glm::translate(model, glm::vec3(-4.0f, 0.0f, (-6.4f - 3 * (3.2f))));
 		model = glm::rotate(model, 90.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		Tree_M.RenderModel();
 
-		//Agave ¬øqu√© sucede si lo renderizan antes del coche y de la pista?
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(-4.0f, 0.0f, (-6.4f - 1 * (3.2f))));
+		model = glm::rotate(model, 90.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		shortTree_M.RenderModel();
+
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(-4.0f, 0.0f, (-6.4f - 4 * (3.2f))));
+		model = glm::rotate(model, 90.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		Bush_M.RenderModel();
+
+		//Agave øquÈ sucede si lo renderizan antes del coche y de la pista?
 		//model = glm::mat4(1.0);
 		//model = glm::translate(model, glm::vec3(0.0f, -1.7f, -2.0f));
 		//model = glm::scale(model, glm::vec3(0.5f, 0.5f, 0.5f));
@@ -895,7 +1012,7 @@ void inputKeyframes(bool* keys)
 				playIndex = 0;
 				i_curr_steps = 0;
 				reproduciranimacion++;
-				printf("presiona 0 para habilitar reproducir de nuevo la animaci√≥n'\n");
+				printf("presiona 0 para habilitar reproducir de nuevo la animaciÛn'\n");
 				habilitaranimacion = 0;
 
 			}
