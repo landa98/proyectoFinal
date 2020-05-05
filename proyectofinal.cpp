@@ -408,7 +408,7 @@ int main()
 	PlaySound(TEXT("Silence.wav"), NULL, SND_LOOP | SND_ASYNC);
 
 
-	camera = Camera(glm::vec3(0.0f, 2.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), -60.0f, 0.0f, 15.0f, 0.5);
+	camera = Camera(glm::vec3(0.0f, 2.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), -60.0f, 0.0f, 25.0f, 0.5);
 
 	brickTexture = Texture("Textures/brick.png");
 	brickTexture.LoadTextureA();
@@ -683,7 +683,7 @@ int main()
 	float JardinX_3 = 4 * (-0.8f + 15.25 * 3.2f);
 	float JardinX_4 = 5 * (-0.8f + 15.25 * 3.2f);
 	float JardinX_5 = -1 * (-0.8f + 15.25 * 3.2f);
-	float JardinX_10 = 1 * (-0.8f + 15.25 * 3.2f);
+	float JardinX_10 = 1 * (-0.8f + 15.25 * 3.2f) - 1.6f;
 	//Auxiliares
 	float recorrerEntrada = 5.5 * 3.2f;
 	float recorrerEntradaZ = -(-0.8f + 5 * 3.2f) - 0.8f;
