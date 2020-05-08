@@ -670,11 +670,15 @@ int main()
 
 	//Variable contadora para el cambio dia y noche
 	float tiempo_Dia = 0.0f;
+	//Variables para recorrer bancas
+	float bancasX_1 = (-0.8f + 12.25 * 3.2f);
+	float bancasX_2 = (-0.8f + 10.25 * 3.2f);
+	float bancasX_3 = (-0.8f + 2.25 * 3.2f);
 	//Variables Para recorrer jardines
 	//+Z
-	float JardinZ_1 = 0*(-6.4f - 12 * (3.2f));
-	float JardinZ_2 = 1*(-6.4f - 12 * (3.2f));
-	float JardinZ_3 = 2*(-6.4f - 12 * (3.2f));
+	float JardinZ_1 = 0 * (-6.4f - 12 * (3.2f));
+	float JardinZ_2 = 1 * (-6.4f - 12 * (3.2f));
+	float JardinZ_3 = 2 * (-6.4f - 12 * (3.2f));
 	float JardinZ_4 = 3 * (-6.4f - 12 * (3.2f));
 	float JardinZ_5 = -1 * (-6.4f - 12 * (3.2f));
 	//X
@@ -688,7 +692,7 @@ int main()
 	float recorrerEntrada = 5.5 * 3.2f;
 	float recorrerEntradaZ = -(-0.8f + 5 * 3.2f) - 0.8f;
 	//float recorrerEntradaZ = -(-0.8f + 5 * 3.2f) -0.8f;
-	
+
 	//Loop mientras no se cierra la ventana
 	while (!mainWindow.getShouldClose())
 	{
@@ -3652,7 +3656,7 @@ int main()
 		Reja_M.RenderModel();
 
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(0.0f, 0.0f, -6.4f + 0.8f + JardinZ_4 + recorrerEntradaZ-4.8f));
+		model = glm::translate(model, glm::vec3(0.0f, 0.0f, -6.4f + 0.8f + JardinZ_4 + recorrerEntradaZ - 4.8f));
 		model = glm::rotate(model, 90.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -3660,7 +3664,7 @@ int main()
 		esquinaRejasInv_M.RenderModel();
 
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(4 * 3.2f + 0.8f, 0.0f, -6.4f + JardinZ_4 + recorrerEntradaZ-4.0f));
+		model = glm::translate(model, glm::vec3(4 * 3.2f + 0.8f, 0.0f, -6.4f + JardinZ_4 + recorrerEntradaZ - 4.0f));
 		model = glm::rotate(model, 270.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -3693,7 +3697,7 @@ int main()
 
 		/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(0.0f, 0.0f, -6.4f + 0.8f + JardinZ_4 + recorrerEntradaZ+2.4f));
+		model = glm::translate(model, glm::vec3(0.0f, 0.0f, -6.4f + 0.8f + JardinZ_4 + recorrerEntradaZ + 2.4f));
 		//model = glm::rotate(model, 90.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -3708,7 +3712,7 @@ int main()
 		Reja_M.RenderModel();
 
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(recorrerEntrada, 0.0f, (-6.4f - 7 * (3.2f)) + JardinZ_4+2.4f));
+		model = glm::translate(model, glm::vec3(recorrerEntrada, 0.0f, (-6.4f - 7 * (3.2f)) + JardinZ_4 + 2.4f));
 		model = glm::scale(model, glm::vec3(-0.1f, 0.1f, 0.1f));
 		model = glm::rotate(model, -90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -3959,7 +3963,7 @@ int main()
 		// =========================================================================================
 		// Jardin esquina superior derecha
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(JardinX_10 + (-1)*( 0.0f), 0.0f, -6.4f + 0.8f + JardinZ_4));//<-
+		model = glm::translate(model, glm::vec3(JardinX_10 + (-1)*(0.0f), 0.0f, -6.4f + 0.8f + JardinZ_4));//<-
 		model = glm::rotate(model, 270.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -3967,7 +3971,7 @@ int main()
 		esquinaRejas_M.RenderModel();
 
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(JardinX_10 + (-1)*( -0.8f + 4 * 3.2f), 0.0f, (-6.4f - 11.25 * (3.2f)) + JardinZ_4));///////////////////////////////////////////////////////////////<---
+		model = glm::translate(model, glm::vec3(JardinX_10 + (-1)*(-0.8f + 4 * 3.2f), 0.0f, (-6.4f - 11.25 * (3.2f)) + JardinZ_4));///////////////////////////////////////////////////////////////<---
 		model = glm::rotate(model, -270.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -3975,7 +3979,7 @@ int main()
 		Reja_M.RenderModel();
 
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(JardinX_10 + (-1)*( -0.8f + 3 * 3.2f), 0.0f, (-6.4f - 11.25 * (3.2f)) + JardinZ_4));//<-
+		model = glm::translate(model, glm::vec3(JardinX_10 + (-1)*(-0.8f + 3 * 3.2f), 0.0f, (-6.4f - 11.25 * (3.2f)) + JardinZ_4));//<-
 		model = glm::rotate(model, -270.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -3983,7 +3987,7 @@ int main()
 		Reja_M.RenderModel();
 
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(JardinX_10 + (-1)*( -0.8f + 2 * 3.2f), 0.0f, (-6.4f - 11.25 * (3.2f)) + JardinZ_4));//<-
+		model = glm::translate(model, glm::vec3(JardinX_10 + (-1)*(-0.8f + 2 * 3.2f), 0.0f, (-6.4f - 11.25 * (3.2f)) + JardinZ_4));//<-
 		model = glm::rotate(model, -270.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -3991,7 +3995,7 @@ int main()
 		Reja_M.RenderModel();
 
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(JardinX_10 + (-1)*( -0.8f + 1 * 3.2f), 0.0f, (-6.4f - 11.25 * (3.2f)) + JardinZ_4));//<-
+		model = glm::translate(model, glm::vec3(JardinX_10 + (-1)*(-0.8f + 1 * 3.2f), 0.0f, (-6.4f - 11.25 * (3.2f)) + JardinZ_4));//<-
 		model = glm::rotate(model, -270.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -3999,7 +4003,7 @@ int main()
 		Reja_M.RenderModel();
 
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(JardinX_10 + (-1)*( -0.8f + 0 * 3.2f), 0.0f, (-6.4f - 11.25 * (3.2f)) + JardinZ_4));//<-
+		model = glm::translate(model, glm::vec3(JardinX_10 + (-1)*(-0.8f + 0 * 3.2f), 0.0f, (-6.4f - 11.25 * (3.2f)) + JardinZ_4));//<-
 		model = glm::rotate(model, -270.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -4007,7 +4011,7 @@ int main()
 		Reja_M.RenderModel();
 
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(JardinX_10 + (-1)*( -0.8f - 0 * 3.2f), 0.0f, -6.4f + 0.8f + JardinZ_4));
+		model = glm::translate(model, glm::vec3(JardinX_10 + (-1)*(-0.8f - 0 * 3.2f), 0.0f, -6.4f + 0.8f + JardinZ_4));
 		model = glm::rotate(model, -90.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -4015,7 +4019,7 @@ int main()
 		Reja_M.RenderModel();
 
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(JardinX_10 + (-1)*( -0.8f - 1 * 3.2f), 0.0f, -6.4f + 0.8f + JardinZ_4));
+		model = glm::translate(model, glm::vec3(JardinX_10 + (-1)*(-0.8f - 1 * 3.2f), 0.0f, -6.4f + 0.8f + JardinZ_4));
 		model = glm::rotate(model, -90.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -4023,7 +4027,7 @@ int main()
 		Reja_M.RenderModel();
 
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(JardinX_10 + (-1)*( -0.8f - 2 * 3.2f), 0.0f, -6.4f + 0.8f + JardinZ_4));
+		model = glm::translate(model, glm::vec3(JardinX_10 + (-1)*(-0.8f - 2 * 3.2f), 0.0f, -6.4f + 0.8f + JardinZ_4));
 		model = glm::rotate(model, -90.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -4031,7 +4035,7 @@ int main()
 		Reja_M.RenderModel();
 
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(JardinX_10 + (-1)*( -0.8f - 3 * 3.2f), 0.0f, -6.4f + 0.8f + JardinZ_4));
+		model = glm::translate(model, glm::vec3(JardinX_10 + (-1)*(-0.8f - 3 * 3.2f), 0.0f, -6.4f + 0.8f + JardinZ_4));
 		model = glm::rotate(model, -90.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -4039,7 +4043,7 @@ int main()
 		Reja_M.RenderModel();
 
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(JardinX_10 + (-1)*( -0.8f - 4 * 3.2f), 0.0f, -6.4f + 0.8f + JardinZ_4));
+		model = glm::translate(model, glm::vec3(JardinX_10 + (-1)*(-0.8f - 4 * 3.2f), 0.0f, -6.4f + 0.8f + JardinZ_4));
 		model = glm::rotate(model, -90.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -4047,7 +4051,7 @@ int main()
 		Reja_M.RenderModel();
 
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(JardinX_10 + (-1)*( -0.8f - 5 * 3.2f), 0.0f, -6.4f + 0.8f + JardinZ_4));
+		model = glm::translate(model, glm::vec3(JardinX_10 + (-1)*(-0.8f - 5 * 3.2f), 0.0f, -6.4f + 0.8f + JardinZ_4));
 		model = glm::rotate(model, -90.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -4055,7 +4059,7 @@ int main()
 		Reja_M.RenderModel();
 
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(JardinX_10 + (-1)*( -0.8f - 6 * 3.2f), 0.0f, -6.4f + 0.8f + JardinZ_4));
+		model = glm::translate(model, glm::vec3(JardinX_10 + (-1)*(-0.8f - 6 * 3.2f), 0.0f, -6.4f + 0.8f + JardinZ_4));
 		model = glm::rotate(model, -90.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -4063,7 +4067,7 @@ int main()
 		Reja_M.RenderModel();
 
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(JardinX_10 + (-1)*( -0.8f - 7 * 3.2f), 0.0f, -6.4f + 0.8f + JardinZ_4));
+		model = glm::translate(model, glm::vec3(JardinX_10 + (-1)*(-0.8f - 7 * 3.2f), 0.0f, -6.4f + 0.8f + JardinZ_4));
 		model = glm::rotate(model, -90.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -4071,7 +4075,7 @@ int main()
 		Reja_M.RenderModel();
 
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(JardinX_10 + (-1)*( -0.8f - 8 * 3.2f), 0.0f, -6.4f + 0.8f + JardinZ_4));
+		model = glm::translate(model, glm::vec3(JardinX_10 + (-1)*(-0.8f - 8 * 3.2f), 0.0f, -6.4f + 0.8f + JardinZ_4));
 		model = glm::rotate(model, -90.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -4079,7 +4083,7 @@ int main()
 		Reja_M.RenderModel();
 
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(JardinX_10 + (-1)*( -0.8f - 9 * 3.2f), 0.0f, -6.4f + 0.8f + JardinZ_4));
+		model = glm::translate(model, glm::vec3(JardinX_10 + (-1)*(-0.8f - 9 * 3.2f), 0.0f, -6.4f + 0.8f + JardinZ_4));
 		model = glm::rotate(model, -90.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -4087,7 +4091,7 @@ int main()
 		Reja_M.RenderModel();
 
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(JardinX_10 + (-1)*( -0.8f - 10 * 3.2f), 0.0f, -6.4f + 0.8f + JardinZ_4));
+		model = glm::translate(model, glm::vec3(JardinX_10 + (-1)*(-0.8f - 10 * 3.2f), 0.0f, -6.4f + 0.8f + JardinZ_4));
 		model = glm::rotate(model, -90.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -4095,7 +4099,7 @@ int main()
 		Reja_M.RenderModel();
 
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(JardinX_10 + (-1)*( -0.8f - 11 * 3.2f), 0.0f, -6.4f + 0.8f + JardinZ_4));
+		model = glm::translate(model, glm::vec3(JardinX_10 + (-1)*(-0.8f - 11 * 3.2f), 0.0f, -6.4f + 0.8f + JardinZ_4));
 		model = glm::rotate(model, -90.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -4103,7 +4107,7 @@ int main()
 		Reja_M.RenderModel();
 
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(JardinX_10 + (-1)*( -0.8f - 12 * 3.2f), 0.0f, -6.4f + 0.8f + JardinZ_4));
+		model = glm::translate(model, glm::vec3(JardinX_10 + (-1)*(-0.8f - 12 * 3.2f), 0.0f, -6.4f + 0.8f + JardinZ_4));
 		model = glm::rotate(model, -90.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -4111,7 +4115,7 @@ int main()
 		Reja_M.RenderModel();
 
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(JardinX_10 + (-1)*( -0.8f - 13 * 3.2f), 0.0f, -6.4f + 0.8f + JardinZ_4));
+		model = glm::translate(model, glm::vec3(JardinX_10 + (-1)*(-0.8f - 13 * 3.2f), 0.0f, -6.4f + 0.8f + JardinZ_4));
 		model = glm::rotate(model, -90.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -4119,7 +4123,7 @@ int main()
 		Reja_M.RenderModel();
 
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(JardinX_10 + (-1)*( -0.8f - 14 * 3.2f), 0.0f, -6.4f + 0.8f + JardinZ_4));
+		model = glm::translate(model, glm::vec3(JardinX_10 + (-1)*(-0.8f - 14 * 3.2f), 0.0f, -6.4f + 0.8f + JardinZ_4));
 		model = glm::rotate(model, -90.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -4127,7 +4131,7 @@ int main()
 		Reja_M.RenderModel();
 		//
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(JardinX_10 + (-1)*( 0.0f), 0.0f, (-6.4f - 1 * (3.2f)) + JardinZ_4));
+		model = glm::translate(model, glm::vec3(JardinX_10 + (-1)*(0.0f), 0.0f, (-6.4f - 1 * (3.2f)) + JardinZ_4));
 		model = glm::rotate(model, 180.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -4135,7 +4139,7 @@ int main()
 		Reja_M.RenderModel();
 
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(JardinX_10 + (-1)*( 0.0f), 0.0f, (-6.4f - 2 * (3.2f)) + JardinZ_4));
+		model = glm::translate(model, glm::vec3(JardinX_10 + (-1)*(0.0f), 0.0f, (-6.4f - 2 * (3.2f)) + JardinZ_4));
 		model = glm::rotate(model, 180.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -4143,7 +4147,7 @@ int main()
 		Reja_M.RenderModel();
 
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(JardinX_10 + (-1)*( 0.0f), 0.0f, (-6.4f - 3 * (3.2f)) + JardinZ_4));
+		model = glm::translate(model, glm::vec3(JardinX_10 + (-1)*(0.0f), 0.0f, (-6.4f - 3 * (3.2f)) + JardinZ_4));
 		model = glm::rotate(model, 180.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -4151,7 +4155,7 @@ int main()
 		Reja_M.RenderModel();
 
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(JardinX_10 + (-1)*( 0.0f), 0.0f, -6.4f + 0.8f + JardinZ_4 + recorrerEntradaZ - 4.8f));
+		model = glm::translate(model, glm::vec3(JardinX_10 + (-1)*(0.0f), 0.0f, -6.4f + 0.8f + JardinZ_4 + recorrerEntradaZ - 4.8f));
 		model = glm::rotate(model, 0.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -4159,7 +4163,7 @@ int main()
 		esquinaRejasInv_M.RenderModel();
 
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(JardinX_10 + (-1)*( 4 * 3.2f + 0.8f), 0.0f, -6.4f + JardinZ_4 + recorrerEntradaZ - 4.0f));
+		model = glm::translate(model, glm::vec3(JardinX_10 + (-1)*(4 * 3.2f + 0.8f), 0.0f, -6.4f + JardinZ_4 + recorrerEntradaZ - 4.0f));
 		model = glm::rotate(model, 270.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -4167,7 +4171,7 @@ int main()
 		Reja_M.RenderModel();
 
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(JardinX_10 + (-1)*( 3 * 3.2f + 0.8f), 0.0f, -6.4f + JardinZ_4 + recorrerEntradaZ - 4.0f));
+		model = glm::translate(model, glm::vec3(JardinX_10 + (-1)*(3 * 3.2f + 0.8f), 0.0f, -6.4f + JardinZ_4 + recorrerEntradaZ - 4.0f));
 		model = glm::rotate(model, -90.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -4175,7 +4179,7 @@ int main()
 		Reja_M.RenderModel();
 
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(JardinX_10 + (-1)*( 2 * 3.2f + 0.8f), 0.0f, -6.4f + JardinZ_4 + recorrerEntradaZ - 4.0f));
+		model = glm::translate(model, glm::vec3(JardinX_10 + (-1)*(2 * 3.2f + 0.8f), 0.0f, -6.4f + JardinZ_4 + recorrerEntradaZ - 4.0f));
 		model = glm::rotate(model, -90.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -4183,7 +4187,7 @@ int main()
 		Reja_M.RenderModel();
 
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(JardinX_10 + (-1)*( 1 * 3.2f + 0.8f), 0.0f, -6.4f + JardinZ_4 + recorrerEntradaZ - 4.0f));
+		model = glm::translate(model, glm::vec3(JardinX_10 + (-1)*(1 * 3.2f + 0.8f), 0.0f, -6.4f + JardinZ_4 + recorrerEntradaZ - 4.0f));
 		model = glm::rotate(model, -90.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -4192,7 +4196,7 @@ int main()
 
 		/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(JardinX_10 + (-1)*( 0.0f), 0.0f, -6.4f + 0.8f + JardinZ_4 + recorrerEntradaZ + 2.4f));
+		model = glm::translate(model, glm::vec3(JardinX_10 + (-1)*(0.0f), 0.0f, -6.4f + 0.8f + JardinZ_4 + recorrerEntradaZ + 2.4f));
 		model = glm::rotate(model, 180.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -4200,7 +4204,7 @@ int main()
 		Reja_M.RenderModel();
 
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(JardinX_10 + (-1)*( 0.0f), 0.0f, (-6.4f - 5 * (3.2f)) + JardinZ_4));
+		model = glm::translate(model, glm::vec3(JardinX_10 + (-1)*(0.0f), 0.0f, (-6.4f - 5 * (3.2f)) + JardinZ_4));
 		model = glm::rotate(model, 180.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -4208,7 +4212,7 @@ int main()
 		Reja_M.RenderModel();
 
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(JardinX_10 + (-1)*( recorrerEntrada), 0.0f, (-6.4f - 7 * (3.2f)) + JardinZ_4 + 2.4f));
+		model = glm::translate(model, glm::vec3(JardinX_10 + (-1)*(recorrerEntrada), 0.0f, (-6.4f - 7 * (3.2f)) + JardinZ_4 + 2.4f));
 		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
 		model = glm::rotate(model, -90.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -4216,7 +4220,7 @@ int main()
 		esquinaRejasExt_M.RenderModel();
 
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(JardinX_10 + (-1)*( recorrerEntrada), 0.0f, (-6.4f - 8 * (3.2f)) + JardinZ_4));
+		model = glm::translate(model, glm::vec3(JardinX_10 + (-1)*(recorrerEntrada), 0.0f, (-6.4f - 8 * (3.2f)) + JardinZ_4));
 		model = glm::rotate(model, 180.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -4224,7 +4228,7 @@ int main()
 		Reja_M.RenderModel();
 
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(JardinX_10 + (-1)*( recorrerEntrada), 0.0f, (-6.4f - 9 * (3.2f)) + JardinZ_4));
+		model = glm::translate(model, glm::vec3(JardinX_10 + (-1)*(recorrerEntrada), 0.0f, (-6.4f - 9 * (3.2f)) + JardinZ_4));
 		model = glm::rotate(model, 180.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -4232,7 +4236,7 @@ int main()
 		Reja_M.RenderModel();
 
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(JardinX_10 + (-1)*( recorrerEntrada), 0.0f, (-6.4f - 10 * (3.2f)) + JardinZ_4));
+		model = glm::translate(model, glm::vec3(JardinX_10 + (-1)*(recorrerEntrada), 0.0f, (-6.4f - 10 * (3.2f)) + JardinZ_4));
 		model = glm::rotate(model, 180.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -4241,7 +4245,7 @@ int main()
 
 		//
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(JardinX_10 + (-1)*( recorrerEntrada), 0.0f, (-6.4f - 11.25 * (3.2f)) + JardinZ_4));
+		model = glm::translate(model, glm::vec3(JardinX_10 + (-1)*(recorrerEntrada), 0.0f, (-6.4f - 11.25 * (3.2f)) + JardinZ_4));
 		model = glm::rotate(model, 180.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -4249,7 +4253,7 @@ int main()
 		esquinaRejasExt_M.RenderModel();
 
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(JardinX_10 + (-1)*( -0.8f - 1 * 3.2f), 0.0f, (-6.4f - 11.25 * (3.2f)) + JardinZ_4));
+		model = glm::translate(model, glm::vec3(JardinX_10 + (-1)*(-0.8f - 1 * 3.2f), 0.0f, (-6.4f - 11.25 * (3.2f)) + JardinZ_4));
 		model = glm::rotate(model, 90.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -4257,7 +4261,7 @@ int main()
 		Reja_M.RenderModel();
 
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(JardinX_10 + (-1)*( -0.8f - 2 * 3.2f), 0.0f, (-6.4f - 11.25 * (3.2f)) + JardinZ_4));
+		model = glm::translate(model, glm::vec3(JardinX_10 + (-1)*(-0.8f - 2 * 3.2f), 0.0f, (-6.4f - 11.25 * (3.2f)) + JardinZ_4));
 		model = glm::rotate(model, 90.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -4266,7 +4270,7 @@ int main()
 
 
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(JardinX_10 + (-1)*( -0.8f - 3 * 3.2f), 0.0f, (-6.4f - 11.25 * (3.2f)) + JardinZ_4));
+		model = glm::translate(model, glm::vec3(JardinX_10 + (-1)*(-0.8f - 3 * 3.2f), 0.0f, (-6.4f - 11.25 * (3.2f)) + JardinZ_4));
 		model = glm::rotate(model, 90.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -4274,7 +4278,7 @@ int main()
 		Reja_M.RenderModel();
 
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(JardinX_10 + (-1)*( -0.8f - 4 * 3.2f), 0.0f, (-6.4f - 11.25 * (3.2f)) + JardinZ_4));
+		model = glm::translate(model, glm::vec3(JardinX_10 + (-1)*(-0.8f - 4 * 3.2f), 0.0f, (-6.4f - 11.25 * (3.2f)) + JardinZ_4));
 		model = glm::rotate(model, 90.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -4282,7 +4286,7 @@ int main()
 		Reja_M.RenderModel();
 
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(JardinX_10 + (-1)*( -0.8f - 5 * 3.2f), 0.0f, (-6.4f - 11.25 * (3.2f)) + JardinZ_4));
+		model = glm::translate(model, glm::vec3(JardinX_10 + (-1)*(-0.8f - 5 * 3.2f), 0.0f, (-6.4f - 11.25 * (3.2f)) + JardinZ_4));
 		model = glm::rotate(model, 90.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -4290,7 +4294,7 @@ int main()
 		Reja_M.RenderModel();
 
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(JardinX_10 + (-1)*( -0.8f - 6 * 3.2f), 0.0f, (-6.4f - 11.25 * (3.2f)) + JardinZ_4));
+		model = glm::translate(model, glm::vec3(JardinX_10 + (-1)*(-0.8f - 6 * 3.2f), 0.0f, (-6.4f - 11.25 * (3.2f)) + JardinZ_4));
 		model = glm::rotate(model, 90.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -4298,7 +4302,7 @@ int main()
 		Reja_M.RenderModel();
 
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(JardinX_10 + (-1)*( -0.8f - 7 * 3.2f), 0.0f, (-6.4f - 11.25 * (3.2f)) + JardinZ_4));
+		model = glm::translate(model, glm::vec3(JardinX_10 + (-1)*(-0.8f - 7 * 3.2f), 0.0f, (-6.4f - 11.25 * (3.2f)) + JardinZ_4));
 		model = glm::rotate(model, 90.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -4306,7 +4310,7 @@ int main()
 		Reja_M.RenderModel();
 
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(JardinX_10 + (-1)*( -0.8f - 8 * 3.2f), 0.0f, (-6.4f - 11.25 * (3.2f)) + JardinZ_4));
+		model = glm::translate(model, glm::vec3(JardinX_10 + (-1)*(-0.8f - 8 * 3.2f), 0.0f, (-6.4f - 11.25 * (3.2f)) + JardinZ_4));
 		model = glm::rotate(model, 90.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -4314,7 +4318,7 @@ int main()
 		Reja_M.RenderModel();
 
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(JardinX_10 + (-1)*( -0.8f - 9 * 3.2f), 0.0f, (-6.4f - 11.25 * (3.2f)) + JardinZ_4));
+		model = glm::translate(model, glm::vec3(JardinX_10 + (-1)*(-0.8f - 9 * 3.2f), 0.0f, (-6.4f - 11.25 * (3.2f)) + JardinZ_4));
 		model = glm::rotate(model, 90.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -4322,7 +4326,7 @@ int main()
 		Reja_M.RenderModel();
 
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(JardinX_10 + (-1)*( -0.8f - 10 * 3.2f), 0.0f, (-6.4f - 11.25 * (3.2f)) + JardinZ_4));
+		model = glm::translate(model, glm::vec3(JardinX_10 + (-1)*(-0.8f - 10 * 3.2f), 0.0f, (-6.4f - 11.25 * (3.2f)) + JardinZ_4));
 		model = glm::rotate(model, 90.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -4330,7 +4334,7 @@ int main()
 		Reja_M.RenderModel();
 
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(JardinX_10 + (-1)*( -0.8f - 11 * 3.2f), 0.0f, (-6.4f - 11.25 * (3.2f)) + JardinZ_4));
+		model = glm::translate(model, glm::vec3(JardinX_10 + (-1)*(-0.8f - 11 * 3.2f), 0.0f, (-6.4f - 11.25 * (3.2f)) + JardinZ_4));
 		model = glm::rotate(model, 90.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -4338,7 +4342,7 @@ int main()
 		Reja_M.RenderModel();
 
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(JardinX_10 + (-1)*( -0.8f - 12 * 3.2f), 0.0f, (-6.4f - 11.25 * (3.2f)) + JardinZ_4));
+		model = glm::translate(model, glm::vec3(JardinX_10 + (-1)*(-0.8f - 12 * 3.2f), 0.0f, (-6.4f - 11.25 * (3.2f)) + JardinZ_4));
 		model = glm::rotate(model, 90.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -4346,7 +4350,7 @@ int main()
 		Reja_M.RenderModel();
 
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(JardinX_10 + (-1)*( -0.8f - 13 * 3.2f), 0.0f, (-6.4f - 11.25 * (3.2f)) + JardinZ_4));
+		model = glm::translate(model, glm::vec3(JardinX_10 + (-1)*(-0.8f - 13 * 3.2f), 0.0f, (-6.4f - 11.25 * (3.2f)) + JardinZ_4));
 		model = glm::rotate(model, 90.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -4354,7 +4358,7 @@ int main()
 		Reja_M.RenderModel();
 
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(JardinX_10 + (-1)*( -0.8f - 14 * 3.2f), 0.0f, (-6.4f - 11.25 * (3.2f)) + JardinZ_4));
+		model = glm::translate(model, glm::vec3(JardinX_10 + (-1)*(-0.8f - 14 * 3.2f), 0.0f, (-6.4f - 11.25 * (3.2f)) + JardinZ_4));
 		model = glm::rotate(model, 90.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -4362,7 +4366,7 @@ int main()
 		Reja_M.RenderModel();
 		//
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(JardinX_10 + (-1)*( -0.8f - 15.25 * 3.2f), 0.0f, (-6.4f - 11.25 * (3.2f)) + JardinZ_4));
+		model = glm::translate(model, glm::vec3(JardinX_10 + (-1)*(-0.8f - 15.25 * 3.2f), 0.0f, (-6.4f - 11.25 * (3.2f)) + JardinZ_4));
 		model = glm::rotate(model, 90.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -4370,7 +4374,7 @@ int main()
 		esquinaRejas_M.RenderModel();
 
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(JardinX_10 + (-1)*( -0.8f - 15.25 * 3.2f), 0.0f, (-6.4f - 10 * (3.2f)) + JardinZ_4));
+		model = glm::translate(model, glm::vec3(JardinX_10 + (-1)*(-0.8f - 15.25 * 3.2f), 0.0f, (-6.4f - 10 * (3.2f)) + JardinZ_4));
 		model = glm::rotate(model, 0.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -4378,7 +4382,7 @@ int main()
 		Reja_M.RenderModel();
 
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(JardinX_10 + (-1)*( -0.8f - 15.25 * 3.2f), 0.0f, (-6.4f - 9 * (3.2f)) + JardinZ_4));
+		model = glm::translate(model, glm::vec3(JardinX_10 + (-1)*(-0.8f - 15.25 * 3.2f), 0.0f, (-6.4f - 9 * (3.2f)) + JardinZ_4));
 		model = glm::rotate(model, 0.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -4386,7 +4390,7 @@ int main()
 		Reja_M.RenderModel();
 
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(JardinX_10 + (-1)*( -0.8f - 15.25 * 3.2f), 0.0f, (-6.4f - 8 * (3.2f)) + JardinZ_4));
+		model = glm::translate(model, glm::vec3(JardinX_10 + (-1)*(-0.8f - 15.25 * 3.2f), 0.0f, (-6.4f - 8 * (3.2f)) + JardinZ_4));
 		model = glm::rotate(model, 0.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -4394,7 +4398,7 @@ int main()
 		Reja_M.RenderModel();
 
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(JardinX_10 + (-1)*( -0.8f - 15.25 * 3.2f), 0.0f, (-6.4f - 7 * (3.2f)) + JardinZ_4));
+		model = glm::translate(model, glm::vec3(JardinX_10 + (-1)*(-0.8f - 15.25 * 3.2f), 0.0f, (-6.4f - 7 * (3.2f)) + JardinZ_4));
 		model = glm::rotate(model, 0.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -4402,7 +4406,7 @@ int main()
 		Reja_M.RenderModel();
 
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(JardinX_10 + (-1)*( -0.8f - 15.25 * 3.2f), 0.0f, (-6.4f - 6 * (3.2f)) + JardinZ_4));
+		model = glm::translate(model, glm::vec3(JardinX_10 + (-1)*(-0.8f - 15.25 * 3.2f), 0.0f, (-6.4f - 6 * (3.2f)) + JardinZ_4));
 		model = glm::rotate(model, 0.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -4410,7 +4414,7 @@ int main()
 		Reja_M.RenderModel();
 
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(JardinX_10 + (-1)*( -0.8f - 15.25 * 3.2f), 0.0f, (-6.4f - 5 * (3.2f)) + JardinZ_4));
+		model = glm::translate(model, glm::vec3(JardinX_10 + (-1)*(-0.8f - 15.25 * 3.2f), 0.0f, (-6.4f - 5 * (3.2f)) + JardinZ_4));
 		model = glm::rotate(model, 0.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -4418,7 +4422,7 @@ int main()
 		Reja_M.RenderModel();
 
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(JardinX_10 + (-1)*( -0.8f - 15.25 * 3.2f), 0.0f, (-6.4f - 4 * (3.2f)) + JardinZ_4));
+		model = glm::translate(model, glm::vec3(JardinX_10 + (-1)*(-0.8f - 15.25 * 3.2f), 0.0f, (-6.4f - 4 * (3.2f)) + JardinZ_4));
 		model = glm::rotate(model, 0.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -4426,7 +4430,7 @@ int main()
 		Reja_M.RenderModel();
 
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(JardinX_10 + (-1)*( -0.8f - 15.25 * 3.2f), 0.0f, (-6.4f - 3 * (3.2f)) + JardinZ_4));
+		model = glm::translate(model, glm::vec3(JardinX_10 + (-1)*(-0.8f - 15.25 * 3.2f), 0.0f, (-6.4f - 3 * (3.2f)) + JardinZ_4));
 		model = glm::rotate(model, 0.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -4434,7 +4438,7 @@ int main()
 		Reja_M.RenderModel();
 
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(JardinX_10 + (-1)*( -0.8f - 15.25 * 3.2f), 0.0f, (-6.4f - 2 * (3.2f)) + JardinZ_4));
+		model = glm::translate(model, glm::vec3(JardinX_10 + (-1)*(-0.8f - 15.25 * 3.2f), 0.0f, (-6.4f - 2 * (3.2f)) + JardinZ_4));
 		model = glm::rotate(model, 0.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -4442,7 +4446,7 @@ int main()
 		Reja_M.RenderModel();
 
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(JardinX_10 + (-1)*( -0.8f - 15.25 * 3.2f), 0.0f, (-6.4f - 1 * (3.2f)) + JardinZ_4));
+		model = glm::translate(model, glm::vec3(JardinX_10 + (-1)*(-0.8f - 15.25 * 3.2f), 0.0f, (-6.4f - 1 * (3.2f)) + JardinZ_4));
 		model = glm::rotate(model, 0.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -4450,7 +4454,7 @@ int main()
 		Reja_M.RenderModel();
 
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(JardinX_10 + (-1)*( -0.8f - 15.25 * 3.2f), 0.0f, -6.4f + 0.8f + JardinZ_4));
+		model = glm::translate(model, glm::vec3(JardinX_10 + (-1)*(-0.8f - 15.25 * 3.2f), 0.0f, -6.4f + 0.8f + JardinZ_4));
 		model = glm::rotate(model, 0.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -4654,7 +4658,7 @@ int main()
 		esquinaRejasInv_M.RenderModel();
 
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3( 4 * 3.2f+0.8f, 0.0f, -6.4f + 0.8f + JardinZ_5 + recorrerEntradaZ));
+		model = glm::translate(model, glm::vec3(4 * 3.2f + 0.8f, 0.0f, -6.4f + 0.8f + JardinZ_5 + recorrerEntradaZ));
 		model = glm::rotate(model, 90.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -4662,7 +4666,7 @@ int main()
 		Reja_M.RenderModel();
 
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3( 3 * 3.2f+0.8f, 0.0f, -6.4f + 0.8f + JardinZ_5 + recorrerEntradaZ));
+		model = glm::translate(model, glm::vec3(3 * 3.2f + 0.8f, 0.0f, -6.4f + 0.8f + JardinZ_5 + recorrerEntradaZ));
 		model = glm::rotate(model, 90.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -4670,7 +4674,7 @@ int main()
 		Reja_M.RenderModel();
 
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3( 2 * 3.2f+0.8f, 0.0f, -6.4f + 0.8f + JardinZ_5 + recorrerEntradaZ));
+		model = glm::translate(model, glm::vec3(2 * 3.2f + 0.8f, 0.0f, -6.4f + 0.8f + JardinZ_5 + recorrerEntradaZ));
 		model = glm::rotate(model, 90.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -4678,7 +4682,7 @@ int main()
 		Reja_M.RenderModel();
 
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3( 1 * 3.2f+0.8f, 0.0f, -6.4f + 0.8f + JardinZ_5 + recorrerEntradaZ));
+		model = glm::translate(model, glm::vec3(1 * 3.2f + 0.8f, 0.0f, -6.4f + 0.8f + JardinZ_5 + recorrerEntradaZ));
 		model = glm::rotate(model, 90.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -5447,7 +5451,23 @@ int main()
 		// =========================================================================================
 		// =========================================================================================
 		// =========================================================================================
-		
+		// =========================================================================================
+		// =========================================================================================
+		// =========================================================================================
+		// =========================================================================================
+		// =========================================================================================
+		// =========================================================================================
+
+		//Bancas
+		//Izquierda
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(4.0f, 0.0f, (-6.4f + 6 * (3.2f))));
+		model = glm::rotate(model, 90.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		Banca_M.RenderModel();
+
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(4.0f, 0.0f, (-6.4f - 2 * (3.2f))));
 		model = glm::rotate(model, 90.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
@@ -5456,6 +5476,166 @@ int main()
 		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		Banca_M.RenderModel();
 
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(4.0f, 0.0f, (-6.4f - 8 * (3.2f))));
+		model = glm::rotate(model, 90.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		Banca_M.RenderModel();
+
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(4.0f, 0.0f, (-6.4f - 16 * (3.2f))));
+		model = glm::rotate(model, 90.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		Banca_M.RenderModel();
+
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(4.0f, 0.0f, (-6.4f - 22 * (3.2f))));
+		model = glm::rotate(model, 90.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		Banca_M.RenderModel();
+
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(4.0f, 0.0f, (-6.4f - 30 * (3.2f))));
+		model = glm::rotate(model, 90.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		Banca_M.RenderModel();
+
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(4.0f, 0.0f, (-6.4f - 36 * (3.2f))));
+		model = glm::rotate(model, 90.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		Banca_M.RenderModel();
+
+
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(4.0f, 0.0f, (-6.4f - 44 * (3.2f))));
+		model = glm::rotate(model, 90.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		Banca_M.RenderModel();
+
+		//Derecha
+
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(4.0f + bancasX_1, 0.0f, (-6.4f + 6 * (3.2f))));
+		model = glm::rotate(model, -90.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		Banca_M.RenderModel();
+
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(4.0f + bancasX_1, 0.0f, (-6.4f - 2 * (3.2f))));
+		model = glm::rotate(model, -90.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		Banca_M.RenderModel();
+
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(4.0f + bancasX_1, 0.0f, (-6.4f - 8 * (3.2f))));
+		model = glm::rotate(model, -90.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		Banca_M.RenderModel();
+
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(4.0f + bancasX_1, 0.0f, (-6.4f - 16 * (3.2f))));
+		model = glm::rotate(model, -90.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		Banca_M.RenderModel();
+
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(4.0f + bancasX_1, 0.0f, (-6.4f - 22 * (3.2f))));
+		model = glm::rotate(model, -90.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		Banca_M.RenderModel();
+
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(4.0f + bancasX_1, 0.0f, (-6.4f - 30 * (3.2f))));
+		model = glm::rotate(model, -90.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		Banca_M.RenderModel();
+
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(4.0f + bancasX_1, 0.0f, (-6.4f - 36 * (3.2f))));
+		model = glm::rotate(model, -90.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		Banca_M.RenderModel();
+
+
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(4.0f + bancasX_1, 0.0f, (-6.4f - 44 * (3.2f))));
+		model = glm::rotate(model, -90.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		Banca_M.RenderModel();
+
+
+		//Extremos
+
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(4.0f + bancasX_2, 0.0f, (-6.4f - 47 * (3.2f))));
+		//model = glm::rotate(model, -90.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		Banca_M.RenderModel();
+
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(4.0f + bancasX_3, 0.0f, (-6.4f - 47 * (3.2f))));
+		//model = glm::rotate(model, -90.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		Banca_M.RenderModel();
+
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(4.0f + bancasX_2, 0.0f, (-6.4f + 8 * (3.2f))));
+		model = glm::rotate(model, 180.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		Banca_M.RenderModel();
+
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(4.0f + bancasX_3, 0.0f, (-6.4f + 8 * (3.2f))));
+		model = glm::rotate(model, 180.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		Banca_M.RenderModel();
+
+		// =========================================================================================
+		// =========================================================================================
+		// =========================================================================================
+		// =========================================================================================
+		// =========================================================================================
+		// =========================================================================================
+		// =========================================================================================
+		// =========================================================================================
+		// =========================================================================================
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(4.0f, 0.0f, (-6.4f - 1 * (3.2f))));
 		//model = glm::rotate(model, 90.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
