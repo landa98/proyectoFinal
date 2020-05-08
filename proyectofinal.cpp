@@ -88,6 +88,7 @@ Model Llanta_M;
 Model Camino_M;
 Model Blackhawk_M;
 Model Helices_M;
+Model rotorTras_M;
 Model Brick_M;
 Model Reja_M;
 Model Banca_M;
@@ -461,6 +462,8 @@ int main()
 	Blackhawk_M.LoadModel("Models/heli.obj");
 	Helices_M = Model();
 	Helices_M.LoadModel("Models/mainRotor.obj");
+	rotorTras_M = Model();
+	rotorTras_M.LoadModel("Models/tailRotor.obj");
 	Camino_M = Model();
 	Camino_M.LoadModel("Models/railroad track.obj");
 	Brick_M = Model();
@@ -962,7 +965,7 @@ int main()
 	rotHeliX = 0.0f;
 	rotHeliY = 0.0f;
 	rotHeliZ = 0.0f;
-	movOffset = 1.0f;
+	movOffset = 2.0f;
 	tiempoOffset = 2.0f;
 	rotHelices = 0.0f;
 	incHelices = 0.001f;
@@ -1028,6 +1031,7 @@ int main()
 		glUniform3f(uniformEyePosition, camera.getCameraPosition().x, camera.getCameraPosition().y, camera.getCameraPosition().z);
 
 		glm::mat4 model(1.0);
+		glm::mat4 aux(1.0);
 
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));
@@ -8129,7 +8133,7 @@ int main()
 		//aspas empiezan a girar
 		if (t1)
 		{
-			rotHelices += incHelices * deltaTime * 1000.0f;
+			rotHelices += incHelices * deltaTime * 500.0f;
 			incHelices *= 1.005;
 			//incHelices *= 2.001;
 			if (incHelices >= 1.5f)
@@ -8141,7 +8145,7 @@ int main()
 		//elevaci�n
 		if (t2)
 		{
-			rotHelices += incHelices * deltaTime * 1000.0f;
+			rotHelices += incHelices * deltaTime * 500.0f;
 			posHeliY += movOffset * deltaTime * 0.3f;
 			//rotHeliZ -= movOffset * deltaTime * 4.0f;
 			//posHeliY += movOffset * deltaTime * .8f * cos(rotHeliZ * toRadians);
@@ -8155,7 +8159,7 @@ int main()
 		//avanza en Z
 		if (t3)
 		{
-			rotHelices += incHelices * deltaTime * 1000.0f;
+			rotHelices += incHelices * deltaTime * 500.0f;
 			posHeliY += 0.0003f * sin(uniTime);
 			posHeliZ -= movOffset * deltaTime;
 			if (posHeliZ <= -1.0f) //10.0f
@@ -8168,7 +8172,7 @@ int main()
 		//primer giro
 		if (t4)
 		{
-			rotHelices += incHelices * deltaTime * 1000.0f;
+			rotHelices += incHelices * deltaTime * 500.0f;
 			posHeliY += 0.0003f * sin(uniTime);
 			rotHeliY += movOffset * deltaTime * 4.0f;
 			posHeliZ -= movOffset * deltaTime * 1.0f * cos(rotHeliY * toRadians);
@@ -8186,7 +8190,7 @@ int main()
 		//descenso
 		if (t5)
 		{
-			rotHelices += incHelices * deltaTime * 1000.0f;
+			rotHelices += incHelices * deltaTime * 500.0f;
 			posHeliY -= movOffset * deltaTime * 0.3f;
 			//rotHeliZ -= movOffset * deltaTime * 4.0f;
 			//posHeliY += movOffset * deltaTime * .8f * cos(rotHeliZ * toRadians);
@@ -8201,7 +8205,7 @@ int main()
 
 		if (ta)
 		{
-			rotHelices += incHelices * deltaTime * 1000.0f;
+			rotHelices += incHelices * deltaTime * 500.0f;
 			if ((lastTime - retardo) >= 5.0f)
 			{
 				ta = false;
@@ -8212,7 +8216,7 @@ int main()
 		//elevaci�n
 		if (t6)
 		{
-			rotHelices += incHelices * deltaTime * 1000.0f;
+			rotHelices += incHelices * deltaTime * 500.0f;
 			posHeliY += movOffset * deltaTime * 0.3f;
 			//rotHeliZ -= movOffset * deltaTime * 4.0f;
 			//posHeliY += movOffset * deltaTime * .8f * cos(rotHeliZ * toRadians);
@@ -8227,7 +8231,7 @@ int main()
 		//segundo giro
 		if (t7)
 		{
-			rotHelices += incHelices * deltaTime * 1000.0f;
+			rotHelices += incHelices * deltaTime * 500.0f;
 			posHeliY += 0.0003f * sin(uniTime);
 			rotHeliY += movOffset * deltaTime * 4.0f;
 			posHeliZ -= movOffset * deltaTime * 1.0f * cos(rotHeliY * toRadians);
@@ -8245,7 +8249,7 @@ int main()
 		//descenso
 		if (t8)
 		{
-			rotHelices += incHelices * deltaTime * 1000.0f;
+			rotHelices += incHelices * deltaTime * 500.0f;
 			posHeliY -= movOffset * deltaTime * 0.3f;
 			//rotHeliZ -= movOffset * deltaTime * 4.0f;
 			//posHeliY += movOffset * deltaTime * .8f * cos(rotHeliZ * toRadians);
@@ -8260,7 +8264,7 @@ int main()
 
 		if (tb)
 		{
-			rotHelices += incHelices * deltaTime * 1000.0f;
+			rotHelices += incHelices * deltaTime * 500.0f;
 			if ((lastTime - retardo) >= 5.0f)
 			{
 				tb = false;
@@ -8271,7 +8275,7 @@ int main()
 		//elevaci�n
 		if (t9)
 		{
-			rotHelices += incHelices * deltaTime * 1000.0f;
+			rotHelices += incHelices * deltaTime * 500.0f;
 			posHeliY += movOffset * deltaTime * 0.3f;
 			//rotHeliZ -= movOffset * deltaTime * 4.0f;
 			//posHeliY += movOffset * deltaTime * .8f * cos(rotHeliZ * toRadians);
@@ -8286,7 +8290,7 @@ int main()
 		//tercer giro
 		if (t10)
 		{
-			rotHelices += incHelices * deltaTime * 1000.0f;
+			rotHelices += incHelices * deltaTime * 500.0f;
 			posHeliY += 0.0003f * sin(uniTime);
 			rotHeliY += movOffset * deltaTime * 15.0f;
 			//rotHeliZ -= movOffset * deltaTime * 4.0f;
@@ -8302,7 +8306,7 @@ int main()
 		//avanza en X
 		if (t11)
 		{
-			rotHelices += incHelices * deltaTime * 1000.0f;
+			rotHelices += incHelices * deltaTime * 500.0f;
 			posHeliY += 0.0003f * sin(uniTime);
 			//rotHeliY += movOffset * deltaTime * 4.0f;
 			posHeliZ -= movOffset * deltaTime * 1.0f * cos(rotHeliY * toRadians);
@@ -8320,7 +8324,7 @@ int main()
 		//cuarto giro
 		if (t12)
 		{
-			rotHelices += incHelices * deltaTime * 1000.0f;
+			rotHelices += incHelices * deltaTime * 500.0f;
 			posHeliY += 0.0003f * sin(uniTime);
 			rotHeliY += movOffset * deltaTime * 15.0f;
 			//rotHeliZ -= movOffset * deltaTime * 4.0f;
@@ -8343,7 +8347,7 @@ int main()
 		model = glm::rotate(model, rotHeliX * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
 		model = glm::rotate(model, rotHeliY * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::rotate(model, rotHeliZ * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));
-
+		aux = model;
 		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
@@ -8352,6 +8356,14 @@ int main()
 		model = glm::rotate(model, rotHelices * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		Helices_M.RenderModel();
+
+		
+		model = aux;
+		model = glm::translate(model, glm::vec3(0.01f, 0.23f, 1.05f));
+		model = glm::rotate(model, rotHelices * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f)); 
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		rotorTras_M.RenderModel();
 
 		//Agave ¿qué sucede si lo renderizan antes del coche y de la pista?
 		//model = glm::mat4(1.0);
