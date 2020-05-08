@@ -86,6 +86,7 @@ Model grayBin_M;
 Model esquinaRejas_M;
 Model esquinaRejasExt_M;
 Model esquinaRejasInv_M;
+Model nave_M;
 
 Skybox skybox;
 Skybox skybox_Dia;
@@ -299,7 +300,7 @@ bool animacion = false;
 
 //NEW// Keyframes
 float posXavion = 2.0, posYavion = 2.0, posZavion = 0;
-float	movAvion_x = 0.0f, movAvion_y = 0.0f;
+float	movAvion_x = 0.0f, movAvion_y = 0.0f, movAvion_z = 0.0f;
 float giroAvion = 0;
 int numFramesActual = 24 + 1;
 
@@ -312,8 +313,10 @@ typedef struct _frame
 	//Variables para GUARDAR Key Frames
 	float movAvion_x;		//Variable para PosicionX
 	float movAvion_y;		//Variable para PosicionY
+	float movAvion_z;		//Variable para PosicionZ
 	float movAvion_xInc;		//Variable para IncrementoX
 	float movAvion_yInc;		//Variable para IncrementoY
+	float movAvion_zInc;		//Variable para IncrementoZ
 	float giroAvion;
 	float giroAvionInc;
 }FRAME;
@@ -331,6 +334,7 @@ void saveFrame(void)
 
 	KeyFrame[FrameIndex].movAvion_x = movAvion_x;
 	KeyFrame[FrameIndex].movAvion_y = movAvion_y;
+	KeyFrame[FrameIndex].movAvion_z = movAvion_z;
 	KeyFrame[FrameIndex].giroAvion;
 
 	FrameIndex++;
@@ -341,6 +345,7 @@ void resetElements(void)
 
 	movAvion_x = KeyFrame[0].movAvion_x;
 	movAvion_y = KeyFrame[0].movAvion_y;
+	movAvion_z = KeyFrame[0].movAvion_z;
 	giroAvion = KeyFrame[0].giroAvion;
 }
 
@@ -348,6 +353,7 @@ void interpolation(void)
 {
 	KeyFrame[playIndex].movAvion_xInc = (KeyFrame[playIndex + 1].movAvion_x - KeyFrame[playIndex].movAvion_x) / i_max_steps;
 	KeyFrame[playIndex].movAvion_yInc = (KeyFrame[playIndex + 1].movAvion_y - KeyFrame[playIndex].movAvion_y) / i_max_steps;
+	KeyFrame[playIndex].movAvion_zInc = (KeyFrame[playIndex + 1].movAvion_z - KeyFrame[playIndex].movAvion_z) / i_max_steps;
 	KeyFrame[playIndex].giroAvionInc = (KeyFrame[playIndex + 1].giroAvion - KeyFrame[playIndex].giroAvion) / i_max_steps;
 
 }
@@ -384,6 +390,7 @@ void animate(void)
 			//Draw animation
 			movAvion_x += KeyFrame[playIndex].movAvion_xInc;
 			movAvion_y += KeyFrame[playIndex].movAvion_yInc;
+			movAvion_z += KeyFrame[playIndex].movAvion_zInc;
 			giroAvion += KeyFrame[playIndex].giroAvionInc;
 			i_curr_steps++;
 		}
@@ -464,6 +471,9 @@ int main()
 	esquinaRejasExt_M.LoadModel("Models/EsquinaRejasExt.obj");
 	esquinaRejasInv_M = Model();
 	esquinaRejasInv_M.LoadModel("Models/EsquinaRejasInvertido.obj");
+	nave_M = Model();
+	nave_M.LoadModel("Models/nave.obj");
+
 	//luz direccional, sólo 1 y siempre debe de existir
 	mainLight = DirectionalLight(1.0f, 1.0f, 1.0f,
 		0.3f, 0.3f,
@@ -816,18 +826,18 @@ int main()
 		//Kitt_M.RenderModel();
 		//spotLights[2].SetPos(glm::vec3(movCoche, -1.5f, 0.0f));
 
-		//model = glm::mat4(1.0);
-		//posblackhawk = glm::vec3(posXavion+movAvion_x,posYavion+movAvion_y, posZavion);
-		//model = glm::translate(model, posblackhawk);
-		//model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
-		//model = glm::rotate(model, giroAvion * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
-		//model = glm::rotate(model, -90* toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
-		//model = glm::rotate(model, -90 * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));
-		//
-		//glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		//Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
-		//Blackhawk_M.RenderModel();
-		//spotLights[3].SetPos(posblackhawk);
+		model = glm::mat4(1.0);
+		posblackhawk = glm::vec3(posXavion+movAvion_x,posYavion+movAvion_y, posZavion);
+		model = glm::translate(model, posblackhawk);
+		model = glm::scale(model, glm::vec3(0.05f, 0.05f, 0.05f));
+		model = glm::rotate(model, giroAvion * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		/*model = glm::rotate(model, -90* toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
+		model = glm::rotate(model, -90 * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));*/
+		
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		nave_M.RenderModel();
+		spotLights[3].SetPos(posblackhawk);
 		//
 		//
 		//model = glm::mat4(1.0);
