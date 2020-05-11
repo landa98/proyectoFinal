@@ -102,6 +102,7 @@ Model esquinaRejas_M;
 Model esquinaRejasExt_M;
 Model esquinaRejasInv_M;
 Model nave_M;
+Model fuente_M;
 
 Skybox skybox;
 Skybox skybox_Dia;
@@ -314,7 +315,7 @@ bool animacion = false;
 
 
 //NEW// Keyframes
-float posXavion = 20.0, posYavion = 0.0, posZavion = 0;
+float posXavion = 12.0, posYavion = 0.0, posZavion = 0;
 float	movAvion_x = 0.0f, movAvion_y = 0.0f, movAvion_z = 0.0f;
 float giroAvion = 0;
 int numFramesActual = 64 + 1;
@@ -492,6 +493,8 @@ int main()
 	esquinaRejasInv_M.LoadModel("Models/EsquinaRejasInvertido.obj");
 	nave_M = Model();
 	nave_M.LoadModel("Models/nave.obj");
+	fuente_M = Model();
+	fuente_M.LoadModel("Models/Fuente.obj");
 
 	//luz direccional, sólo 1 y siempre debe de existir
 	mainLight = DirectionalLight(1.0f, 1.0f, 1.0f,
@@ -8364,6 +8367,13 @@ int main()
 		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f)); 
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		rotorTras_M.RenderModel();
+
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(7 * 3.2f, 0.0f, -7 * 1.6f));
+		model = glm::scale(model, glm::vec3(0.075f, 0.075f, 0.075f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		fuente_M.RenderModel();
 
 		//Agave ¿qué sucede si lo renderizan antes del coche y de la pista?
 		//model = glm::mat4(1.0);
