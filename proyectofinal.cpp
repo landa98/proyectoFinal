@@ -103,6 +103,13 @@ Model esquinaRejasExt_M;
 Model esquinaRejasInv_M;
 Model nave_M;
 Model fuente_M;
+//Primitivas kiosco
+Model base_M;
+Model columna_M;
+Model barandalRecto_M;
+Model triangulo_M;
+Model octagono_M;
+Model escalon_M;
 
 Skybox skybox;
 Skybox skybox_Dia;
@@ -123,6 +130,13 @@ static const char* vShader = "shaders/shader_light.vert";
 
 // Fragment Shader
 static const char* fShader = "shaders/shader_light.frag";
+
+// Vertex Shader Uniform Color
+static const char* vShaderUC = "shaders/shader_lightUC.vert";
+
+// Fragment Shader Uniform Color
+static const char* fShaderUC = "shaders/shader_lightUC.frag";
+
 //cálculo del promedio de las normales para sombreado de Phong
 void calcAverageNormals(unsigned int * indices, unsigned int indiceCount, GLfloat * vertices, unsigned int verticeCount,
 	unsigned int vLength, unsigned int normalOffset)
@@ -302,8 +316,11 @@ void CrearCubo()
 void CreateShaders()
 {
 	Shader *shader1 = new Shader();
+	/*Shader *shader2 = new Shader();*/
 	shader1->CreateFromFiles(vShader, fShader);
 	shaderList.push_back(*shader1);
+	/*shader2->CreateFromFiles(vShaderUC, fShaderUC);
+	shaderList.push_back(*shader2);*/
 }
 
 
@@ -495,6 +512,18 @@ int main()
 	nave_M.LoadModel("Models/nave.obj");
 	fuente_M = Model();
 	fuente_M.LoadModel("Models/Fuente.obj");
+	base_M = Model();
+	base_M.LoadModel("Models/Base.obj");
+	columna_M = Model();
+	columna_M.LoadModel("Models/Columna.obj");
+	barandalRecto_M = Model();
+	barandalRecto_M.LoadModel("Models/BarandalRecto.obj");
+	triangulo_M = Model();
+	triangulo_M.LoadModel("Models/Triangulo.obj");
+	octagono_M = Model();
+	octagono_M.LoadModel("Models/Tapa.obj");
+	escalon_M = Model();
+	escalon_M.LoadModel("Models/Escalon.obj");
 
 	//luz direccional, sólo 1 y siempre debe de existir
 	mainLight = DirectionalLight(1.0f, 1.0f, 1.0f,
@@ -511,6 +540,47 @@ int main()
 	pointLights[1] = PointLight(1.0f, 1.0f, 1.0f,
 		0.3f, 1.0f,
 		4.0f, 7.0f, -25.3f,
+		0.0f, 0.05f, 0.1f);
+	pointLightCount++;
+	pointLights[2] = PointLight(1.0f, 1.0f, 1.0f,
+		0.3f, 1.0f,
+		4.0f, 7.0f, -69.7f,
+		0.0f, 0.05f, 0.1f);
+	pointLightCount++;
+	pointLights[3] = PointLight(1.0f, 1.0f, 1.0f,
+		0.3f, 1.0f,
+		4.0f, 7.0f, -114.9f,
+		0.0f, 0.05f, 0.1f);
+	pointLightCount++;
+	pointLights[4] = PointLight(1.0f, 1.0f, 1.0f,
+		0.3f, 1.0f,
+		4.0f, 7.0f, -158.8f,
+		0.0f, 0.05f, 0.1f);
+	pointLightCount++;
+	//
+	pointLights[5] = PointLight(1.0f, 1.0f, 1.0f,
+		0.3f, 1.0f,
+		42.4f, 7.0f, 17.2f,
+		0.0f, 0.05f, 0.1f);
+	pointLightCount++;
+	pointLights[6] = PointLight(1.0f, 1.0f, 1.0f,
+		0.3f, 1.0f,
+		42.4f, 7.0f, -25.3f,
+		0.0f, 0.05f, 0.1f);
+	pointLightCount++;
+	pointLights[7] = PointLight(1.0f, 1.0f, 1.0f,
+		0.3f, 1.0f,
+		42.4f, 7.0f, -69.7f,
+		0.0f, 0.05f, 0.1f);
+	pointLightCount++;
+	pointLights[8] = PointLight(1.0f, 1.0f, 1.0f,
+		0.3f, 1.0f,
+		42.4f, 7.0f, -114.9f,
+		0.0f, 0.05f, 0.1f);
+	pointLightCount++;
+	pointLights[9] = PointLight(1.0f, 1.0f, 1.0f,
+		0.3f, 1.0f,
+		42.4f, 7.0f, -158.8f,
 		0.0f, 0.05f, 0.1f);
 	pointLightCount++;
 	//4.0f, 0.0f, (-6.4f - 1 * (3.2f))
@@ -592,7 +662,7 @@ int main()
 
 
 	GLuint uniformProjection = 0, uniformModel = 0, uniformView = 0, uniformEyePosition = 0,
-		uniformSpecularIntensity = 0, uniformShininess = 0;
+		uniformSpecularIntensity = 0, uniformShininess = 0, uniformColor = 0;
 	glm::mat4 projection = glm::perspective(45.0f, (GLfloat)mainWindow.getBufferWidth() / mainWindow.getBufferHeight(), 0.1f, 300.0f);
 
 	movCoche = 0.0f;
@@ -961,7 +1031,7 @@ int main()
 	float recorrerEntradaZ = -(-0.8f + 5 * 3.2f) - 0.8f;
 	//float recorrerEntradaZ = -(-0.8f + 5 * 3.2f) -0.8f;
 
-	posHeli = 0.0f;
+	posHeli = -10.0f;
 	posHeliX = 40.0f;
 	posHeliY = 0.2f;
 	posHeliZ = 0.0f;
@@ -1003,7 +1073,7 @@ int main()
 
 		if (luzSol <= 0.3)
 		{
-			pointLightCount = 2;
+			pointLightCount = 10;
 			spotLightCount = 1;
 			skybox_Noche.DrawSkybox(camera.calculateViewMatrix(), projection);
 		}
@@ -1021,6 +1091,7 @@ int main()
 		uniformEyePosition = shaderList[0].GetEyePositionLocation();
 		uniformSpecularIntensity = shaderList[0].GetSpecularIntensityLocation();
 		uniformShininess = shaderList[0].GetShininessLocation();
+		uniformColor = shaderList[0].GetColorLocation();
 
 		glm::vec3 lowerLight = camera.getCameraPosition();
 		lowerLight.y -= 0.3f;
@@ -1035,7 +1106,11 @@ int main()
 
 		glm::mat4 model(1.0);
 		glm::mat4 aux(1.0);
+		glm::vec3 color(1.0);
 
+
+		/*color = glm::vec3(1.0f, 1.0f, 1.0f);
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));*/
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(30.0f, 1.0f, 30.0f));
@@ -8368,12 +8443,436 @@ int main()
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		rotorTras_M.RenderModel();
 
+
+		// Fuentes
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(7 * 3.2f, 0.0f, -7 * 1.6f));
-		model = glm::scale(model, glm::vec3(0.075f, 0.075f, 0.075f));
+		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		
 		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		fuente_M.RenderModel();
+
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(7 * 3.2f, 0.0f, -80 * 1.6f));
+		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+
+		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		fuente_M.RenderModel();
+
+
+		/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		///////////////////////////////////////////////Modelado Jerárquico///////////////////////////////////////////////////////////
+		/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(23.5f, 0.0f, -69.0f));
+		model = glm::scale(model, glm::vec3(0.25f, 0.25f, 0.25f));
+		aux = model;
+		color = glm::vec3(0.7f, 0.7f, 0.0f);
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+
+		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		base_M.RenderModel();
+
+
+		model = aux;
+		model = glm::translate(model, glm::vec3(11.0f, 15.0f, 26.5f));
+		//model = glm::scale(model, glm::vec3(0.f, 0.075f, 0.075f));
+		color = glm::vec3(0.5f, 0.5f, 0.0f);
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+
+		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		columna_M.RenderModel();
+
+		model = glm::rotate(model, -45.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		color = glm::vec3(0.0f, 0.5f, 1.0f);
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+
+		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		barandalRecto_M.RenderModel();
+		
+		model = aux;
+		model = glm::translate(model, glm::vec3(-11.0f, 15.0f, 26.5f));
+		//model = glm::scale(model, glm::vec3(0.f, 0.075f, 0.075f));
+		color = glm::vec3(0.5f, 0.5f, 0.0f);
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+
+		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		columna_M.RenderModel();
+
+		
+
+		//
+		model = aux;
+		model = glm::translate(model, glm::vec3(11.0f, 15.0f, -26.5f));
+		color = glm::vec3(0.5f, 0.5f, 0.0f);
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+
+		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		columna_M.RenderModel();
+
+		model = aux;
+		model = glm::translate(model, glm::vec3(-11.0f, 15.0f, -26.5f));
+		color = glm::vec3(0.5f, 0.5f, 0.0f);
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+
+		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		columna_M.RenderModel();
+
+		model = glm::rotate(model, 135.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		color = glm::vec3(0.0f, 0.5f, 1.0f);
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+
+		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		barandalRecto_M.RenderModel();
+
+		//
+		model = aux;
+		model = glm::translate(model, glm::vec3(26.5f, 15.0f, -11.0f));
+		color = glm::vec3(0.5f, 0.5f, 0.0f);
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+
+		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		columna_M.RenderModel();
+		
+		model = glm::rotate(model, 45.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		color = glm::vec3(0.0f, 0.5f, 1.0f);
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+
+		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		barandalRecto_M.RenderModel();
+		
+
+		model = aux;
+		model = glm::translate(model, glm::vec3(26.5f, 15.0f, 11.0f));
+		color = glm::vec3(0.5f, 0.5f, 0.0f);
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+
+		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		columna_M.RenderModel();
+
+		//model = glm::rotate(model, -90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		color = glm::vec3(0.0f, 0.5f, 1.0f);
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+
+		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		barandalRecto_M.RenderModel();
+
+		//
+		model = aux;
+		model = glm::translate(model, glm::vec3(-26.5f, 15.0f, -11.0f));
+		color = glm::vec3(0.5f, 0.5f, 0.0f);
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+
+		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		columna_M.RenderModel();
+
+		model = glm::rotate(model, 180.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		color = glm::vec3(0.0f, 0.5f, 1.0f);
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+
+		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		barandalRecto_M.RenderModel();
+
+
+		model = aux;
+		model = glm::translate(model, glm::vec3(-26.5f, 15.0f, 11.0f));
+		color = glm::vec3(0.5f, 0.5f, 0.0f);
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+
+		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		columna_M.RenderModel();
+
+		model = glm::rotate(model, 225.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		color = glm::vec3(0.0f, 0.5f, 1.0f);
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+
+		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		barandalRecto_M.RenderModel();
+
+		// Techo
+		model = aux;
+		model = glm::translate(model, glm::vec3(0.0f, 55.0f, 0.0f));
+		color = glm::vec3(.5f, .16f, .16f);
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+
+		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		octagono_M.RenderModel();
+
+		color = glm::vec3(.6f, 0.3f, 0.0f);
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+
+		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		triangulo_M.RenderModel();
+
+		model = glm::rotate(model, 45.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		triangulo_M.RenderModel();
+
+		model = glm::rotate(model, 90.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		triangulo_M.RenderModel();
+
+		model = glm::rotate(model, 135.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		triangulo_M.RenderModel();
+
+		model = glm::rotate(model, 180.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		triangulo_M.RenderModel();
+
+		model = glm::rotate(model, 225.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		triangulo_M.RenderModel();
+
+		model = glm::rotate(model, 270.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		triangulo_M.RenderModel();
+
+		model = glm::rotate(model, 315.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		triangulo_M.RenderModel();
+		
+
+		// Escalones Norte
+		// 1ª Capa
+		color = glm::vec3(0.3f, 0.3f, 0.0f);
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		model = aux;
+		model = glm::translate(model, glm::vec3(0.0f, 0.0f, 29.322f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+
+		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		escalon_M.RenderModel();
+
+		model = glm::translate(model, glm::vec3(0.0f, 0.0f, 3.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+
+		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		escalon_M.RenderModel();
+
+		model = glm::translate(model, glm::vec3(0.0f, 0.0f, 3.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+
+		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		escalon_M.RenderModel();
+
+		model = glm::translate(model, glm::vec3(0.0f, 0.0f, 3.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+
+		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		escalon_M.RenderModel();
+
+		model = glm::translate(model, glm::vec3(0.0f, 0.0f, 3.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+
+		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		escalon_M.RenderModel();
+
+		// 2ª Capa
+		color = glm::vec3(0.3f, 0.3f, 0.0f);
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		model = aux;
+		model = glm::translate(model, glm::vec3(0.0f, 3.0f, 29.322f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+
+		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		escalon_M.RenderModel();
+
+		model = glm::translate(model, glm::vec3(0.0f, 0.0f, 3.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+
+		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		escalon_M.RenderModel();
+
+		model = glm::translate(model, glm::vec3(0.0f, 0.0f, 3.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+
+		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		escalon_M.RenderModel();
+
+		model = glm::translate(model, glm::vec3(0.0f, 0.0f, 3.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+
+		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		escalon_M.RenderModel();
+
+		// 3ª Capa
+		color = glm::vec3(0.3f, 0.3f, 0.0f);
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		model = aux;
+		model = glm::translate(model, glm::vec3(0.0f, 6.0f, 29.322f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+
+		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		escalon_M.RenderModel();
+
+		model = glm::translate(model, glm::vec3(0.0f, 0.0f, 3.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+
+		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		escalon_M.RenderModel();
+
+		model = glm::translate(model, glm::vec3(0.0f, 0.0f, 3.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+
+		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		escalon_M.RenderModel();
+
+		// 4ª Capa
+		color = glm::vec3(0.3f, 0.3f, 0.0f);
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		model = aux;
+		model = glm::translate(model, glm::vec3(0.0f, 9.0f, 29.322f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+
+		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		escalon_M.RenderModel();
+
+		model = glm::translate(model, glm::vec3(0.0f, 0.0f, 3.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+
+		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		escalon_M.RenderModel();
+
+		// 5ª Capa
+		color = glm::vec3(0.3f, 0.3f, 0.0f);
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		model = aux;
+		model = glm::translate(model, glm::vec3(0.0f, 12.0f, 29.322f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+
+		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		escalon_M.RenderModel();
+
+		// Escalones Sur
+		// 1ª Capa
+		color = glm::vec3(0.3f, 0.3f, 0.0f);
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		model = aux;
+		model = glm::translate(model, glm::vec3(0.0f, 0.0f, -29.322f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+
+		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		escalon_M.RenderModel();
+
+		model = glm::translate(model, glm::vec3(0.0f, 0.0f, -3.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+
+		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		escalon_M.RenderModel();
+
+		model = glm::translate(model, glm::vec3(0.0f, 0.0f, -3.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+
+		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		escalon_M.RenderModel();
+
+		model = glm::translate(model, glm::vec3(0.0f, 0.0f, -3.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+
+		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		escalon_M.RenderModel();
+
+		model = glm::translate(model, glm::vec3(0.0f, 0.0f, -3.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+
+		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		escalon_M.RenderModel();
+
+		// 2ª Capa
+		color = glm::vec3(0.3f, 0.3f, 0.0f);
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		model = aux;
+		model = glm::translate(model, glm::vec3(0.0f, 3.0f, -29.322f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+
+		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		escalon_M.RenderModel();
+
+		model = glm::translate(model, glm::vec3(0.0f, 0.0f, -3.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+
+		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		escalon_M.RenderModel();
+
+		model = glm::translate(model, glm::vec3(0.0f, 0.0f, -3.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+
+		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		escalon_M.RenderModel();
+
+		model = glm::translate(model, glm::vec3(0.0f, 0.0f, -3.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+
+		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		escalon_M.RenderModel();
+
+		// 3ª Capa
+		color = glm::vec3(0.3f, 0.3f, 0.0f);
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		model = aux;
+		model = glm::translate(model, glm::vec3(0.0f, 6.0f, -29.322f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+
+		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		escalon_M.RenderModel();
+
+		model = glm::translate(model, glm::vec3(0.0f, 0.0f, -3.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+
+		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		escalon_M.RenderModel();
+
+		model = glm::translate(model, glm::vec3(0.0f, 0.0f, -3.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+
+		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		escalon_M.RenderModel();
+
+		// 4ª Capa
+		color = glm::vec3(0.3f, 0.3f, 0.0f);
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		model = aux;
+		model = glm::translate(model, glm::vec3(0.0f, 9.0f, -29.322f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+
+		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		escalon_M.RenderModel();
+
+		model = glm::translate(model, glm::vec3(0.0f, 0.0f, -3.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+
+		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		escalon_M.RenderModel();
+
+		// 5ª Capa
+		color = glm::vec3(0.3f, 0.3f, 0.0f);
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		model = aux;
+		model = glm::translate(model, glm::vec3(0.0f, 12.0f, -29.322f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+
+		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		escalon_M.RenderModel();
 
 		//Agave ¿qué sucede si lo renderizan antes del coche y de la pista?
 		//model = glm::mat4(1.0);
