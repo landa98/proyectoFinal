@@ -56,6 +56,13 @@ float rotHeliY;
 float rotHeliZ;
 float rotHelices;
 float incHelices;
+float posCarro;
+float posCarroX = -60.0f;
+float posCarroY;
+float posCarroZ;
+float rotCarroX;
+float rotCarroY;
+float rotCarroZ;
 float tiempoOffset;
 float retardo;
 bool t1 = true;
@@ -102,6 +109,7 @@ Model esquinaRejas_M;
 Model esquinaRejasExt_M;
 Model esquinaRejasInv_M;
 Model nave_M;
+Model pickle_M;
 Model fuente_M;
 //Primitivas kiosco
 Model base_M;
@@ -329,33 +337,35 @@ void CreateShaders()
 
 bool animacion = false;
 
-
-
 //NEW// Keyframes
-float posXavion = 12.0, posYavion = 0.0, posZavion = 0;
-float	movAvion_x = 0.0f, movAvion_y = 0.0f, movAvion_z = 0.0f;
-float giroAvion = 0;
-int numFramesActual = 64 + 1;
+float posXModelo = 10.0, posYModelo = 0.0, posZModelo = 2.0;
+float movModelo_x = 0.0f, movModelo_y = 0.0f, movModelo_z = 0.0f;
+float giroModeloX = 0.0f;
+float giroModeloY = 0.0f;
+float giroModeloZ = 0.0f;
 
-
-#define MAX_FRAMES 65
-int i_max_steps = 50;
-int i_curr_steps = numFramesActual;
+#define MAX_FRAMES 100
+int i_max_steps = 90;
+int i_curr_steps = 88;
 typedef struct _frame
 {
 	//Variables para GUARDAR Key Frames
-	float movAvion_x;		//Variable para PosicionX
-	float movAvion_y;		//Variable para PosicionY
-	float movAvion_z;		//Variable para PosicionZ
-	float movAvion_xInc;		//Variable para IncrementoX
-	float movAvion_yInc;		//Variable para IncrementoY
-	float movAvion_zInc;		//Variable para IncrementoZ
-	float giroAvion;
-	float giroAvionInc;
+	float movModelo_x;		//Variable para PosicionX
+	float movModelo_y;		//Variable para PosicionY
+	float movModelo_z;
+	float movModelo_xInc;		//Variable para IncrementoX
+	float movModelo_yInc;		//Variable para IncrementoY
+	float movModelo_zInc;
+	float giroModeloX;
+	float giroModeloY;
+	float giroModeloZ;
+	float giroModeloX_Inc;
+	float giroModeloY_Inc;
+	float giroModeloZ_Inc;
 }FRAME;
 
 FRAME KeyFrame[MAX_FRAMES];
-int FrameIndex = numFramesActual;			//introducir datos
+int FrameIndex = 88;			//introducir datos
 bool play = false;
 int playIndex = 0;
 
@@ -365,10 +375,12 @@ void saveFrame(void)
 	printf("frameindex %d\n", FrameIndex);
 
 
-	KeyFrame[FrameIndex].movAvion_x = movAvion_x;
-	KeyFrame[FrameIndex].movAvion_y = movAvion_y;
-	KeyFrame[FrameIndex].movAvion_z = movAvion_z;
-	KeyFrame[FrameIndex].giroAvion;
+	KeyFrame[FrameIndex].movModelo_x = movModelo_x;
+	KeyFrame[FrameIndex].movModelo_y = movModelo_y;
+	KeyFrame[FrameIndex].movModelo_z = movModelo_z;
+	KeyFrame[FrameIndex].giroModeloX;
+	KeyFrame[FrameIndex].giroModeloY;
+	KeyFrame[FrameIndex].giroModeloZ;
 
 	FrameIndex++;
 }
@@ -376,18 +388,22 @@ void saveFrame(void)
 void resetElements(void)
 {
 
-	movAvion_x = KeyFrame[0].movAvion_x;
-	movAvion_y = KeyFrame[0].movAvion_y;
-	movAvion_z = KeyFrame[0].movAvion_z;
-	giroAvion = KeyFrame[0].giroAvion;
+	movModelo_x = KeyFrame[0].movModelo_x;
+	movModelo_y = KeyFrame[0].movModelo_y;
+	movModelo_z = KeyFrame[0].movModelo_z;
+	giroModeloX = KeyFrame[0].giroModeloX;
+	giroModeloY = KeyFrame[0].giroModeloY;
+	giroModeloZ = KeyFrame[0].giroModeloZ;
 }
 
 void interpolation(void)
 {
-	KeyFrame[playIndex].movAvion_xInc = (KeyFrame[playIndex + 1].movAvion_x - KeyFrame[playIndex].movAvion_x) / i_max_steps;
-	KeyFrame[playIndex].movAvion_yInc = (KeyFrame[playIndex + 1].movAvion_y - KeyFrame[playIndex].movAvion_y) / i_max_steps;
-	KeyFrame[playIndex].movAvion_zInc = (KeyFrame[playIndex + 1].movAvion_z - KeyFrame[playIndex].movAvion_z) / i_max_steps;
-	KeyFrame[playIndex].giroAvionInc = (KeyFrame[playIndex + 1].giroAvion - KeyFrame[playIndex].giroAvion) / i_max_steps;
+	KeyFrame[playIndex].movModelo_xInc = (KeyFrame[playIndex + 1].movModelo_x - KeyFrame[playIndex].movModelo_x) / i_max_steps;
+	KeyFrame[playIndex].movModelo_yInc = (KeyFrame[playIndex + 1].movModelo_y - KeyFrame[playIndex].movModelo_y) / i_max_steps;
+	KeyFrame[playIndex].movModelo_zInc = (KeyFrame[playIndex + 1].movModelo_z - KeyFrame[playIndex].movModelo_z) / i_max_steps;
+	KeyFrame[playIndex].giroModeloX_Inc = (KeyFrame[playIndex + 1].giroModeloX - KeyFrame[playIndex].giroModeloX) / i_max_steps;
+	KeyFrame[playIndex].giroModeloY_Inc = (KeyFrame[playIndex + 1].giroModeloY - KeyFrame[playIndex].giroModeloY) / i_max_steps;
+	KeyFrame[playIndex].giroModeloZ_Inc = (KeyFrame[playIndex + 1].giroModeloZ - KeyFrame[playIndex].giroModeloZ) / i_max_steps;
 
 }
 
@@ -421,10 +437,12 @@ void animate(void)
 			//printf("se quedó aqui\n");
 			//printf("max steps: %f", i_max_steps);
 			//Draw animation
-			movAvion_x += KeyFrame[playIndex].movAvion_xInc;
-			movAvion_y += KeyFrame[playIndex].movAvion_yInc;
-			movAvion_z += KeyFrame[playIndex].movAvion_zInc;
-			giroAvion += KeyFrame[playIndex].giroAvionInc;
+			movModelo_x += KeyFrame[playIndex].movModelo_xInc;
+			movModelo_y += KeyFrame[playIndex].movModelo_yInc;
+			movModelo_z += KeyFrame[playIndex].movModelo_zInc;
+			giroModeloX += KeyFrame[playIndex].giroModeloX_Inc;
+			giroModeloY += KeyFrame[playIndex].giroModeloY_Inc;
+			giroModeloZ += KeyFrame[playIndex].giroModeloZ_Inc;
 			i_curr_steps++;
 		}
 
@@ -509,7 +527,9 @@ int main()
 	esquinaRejasInv_M = Model();
 	esquinaRejasInv_M.LoadModel("Models/EsquinaRejasInvertido.obj");
 	nave_M = Model();
-	nave_M.LoadModel("Models/nave.obj");
+	nave_M.LoadModel("Models/Nave.obj");
+	pickle_M = Model();
+	pickle_M.LoadModel("Models/Pepinillo.obj");
 	fuente_M = Model();
 	fuente_M.LoadModel("Models/Fuente.obj");
 	base_M = Model();
@@ -583,7 +603,7 @@ int main()
 		42.4f, 7.0f, -158.8f,
 		0.0f, 0.05f, 0.1f);
 	pointLightCount++;
-	//4.0f, 0.0f, (-6.4f - 1 * (3.2f))
+	/*4.0f, 0.0f, (-6.4f - 1 * (3.2f))*/
 	unsigned int spotLightCount = 0;
 
 
@@ -666,343 +686,636 @@ int main()
 	glm::mat4 projection = glm::perspective(45.0f, (GLfloat)mainWindow.getBufferWidth() / mainWindow.getBufferHeight(), 0.1f, 300.0f);
 
 	movCoche = 0.0f;
-	movOffset = 1.0f;
+	movOffset = 5.0f;
 	avanza = 1;
 
 	//KEYFRAMES DECLARADOS INICIALES
 
-	KeyFrame[0].movAvion_x = 0.0f;
-	KeyFrame[0].movAvion_y = 0.0f;
-	KeyFrame[0].movAvion_z = 0.0f;
-	KeyFrame[0].giroAvion = 0;
-
-
-	KeyFrame[1].movAvion_x = 0.0f;
-	KeyFrame[1].movAvion_y = 5.0f;
-	KeyFrame[1].movAvion_z = 10.0f;
-	KeyFrame[1].giroAvion = 0;
-
-
-	KeyFrame[2].movAvion_x = 0.0f;
-	KeyFrame[2].movAvion_y = 10.0f;
-	KeyFrame[2].movAvion_z = 20.0f;
-	KeyFrame[2].giroAvion = 0;
-
-
-	KeyFrame[3].movAvion_x = 0.0f;
-	KeyFrame[3].movAvion_y = 15.0f;
-	KeyFrame[3].movAvion_z = 30.0f;
-	KeyFrame[3].giroAvion = 0;
-
-	KeyFrame[4].movAvion_x = 0.0f;
-	KeyFrame[4].movAvion_y = 20.0f;
-	KeyFrame[4].movAvion_z = 40.0f;
-	KeyFrame[4].giroAvion = 0.0f;
-
-	KeyFrame[5].movAvion_x = 0.0f;
-	KeyFrame[5].movAvion_y = 25.0f;
-	KeyFrame[5].movAvion_z = 50.0f;
-	KeyFrame[5].giroAvion = 0.0f;
-
-	KeyFrame[6].movAvion_x = 0.0f;
-	KeyFrame[6].movAvion_y = 30.0f;
-	KeyFrame[6].movAvion_z = 60.0f;
-	KeyFrame[6].giroAvion = 0.0f;
-
-	KeyFrame[7].movAvion_x = 0.0f;
-	KeyFrame[7].movAvion_y = 35.0f;
-	KeyFrame[7].movAvion_z = 70.0f;
-	KeyFrame[7].giroAvion = 0.0f;
-
-	KeyFrame[8].movAvion_x = 0.0f;
-	KeyFrame[8].movAvion_y = 30.0f;
-	KeyFrame[8].movAvion_z = 80.0f;
-	KeyFrame[8].giroAvion = 0.0f;
-
-	KeyFrame[9].movAvion_x = 0.0f;
-	KeyFrame[9].movAvion_y = 35.0f;
-	KeyFrame[9].movAvion_z = 90.0f;
-	KeyFrame[9].giroAvion = 0.0f;
-
-	KeyFrame[10].movAvion_x = 0.0f;
-	KeyFrame[10].movAvion_y = 30.0f;
-	KeyFrame[10].movAvion_z = 100.0f;
-	KeyFrame[10].giroAvion = 0.0f;
-
-	KeyFrame[11].movAvion_x = 0.0f;
-	KeyFrame[11].movAvion_y = 35.0f;
-	KeyFrame[11].movAvion_z = 110.0f;
-	KeyFrame[11].giroAvion = 0.0f;
-
-	KeyFrame[12].movAvion_x = 0.0f;
-	KeyFrame[12].movAvion_y = 30.0f;
-	KeyFrame[12].movAvion_z = 120.0f;
-	KeyFrame[12].giroAvion = 0.0f;
-
-	KeyFrame[13].movAvion_x = 0.0f;
-	KeyFrame[13].movAvion_y = 35.0f;
-	KeyFrame[13].movAvion_z = 130.0f;
-	KeyFrame[13].giroAvion = 0.0f;
-
-	KeyFrame[14].movAvion_x = 0.0f;
-	KeyFrame[14].movAvion_y = 30.0f;
-	KeyFrame[14].movAvion_z = 140.0f;
-	KeyFrame[14].giroAvion = 0.0f;
-
-	KeyFrame[15].movAvion_x = 0.0f;
-	KeyFrame[15].movAvion_y = 35.0f;
-	KeyFrame[15].movAvion_z = 150.0f;
-	KeyFrame[15].giroAvion = 0.0f;
-
-	KeyFrame[16].movAvion_x = 0.0f;
-	KeyFrame[16].movAvion_y = 30.0f;
-	KeyFrame[16].movAvion_z = 160.0f;
-	KeyFrame[16].giroAvion = 0.0f;
-
-	KeyFrame[17].movAvion_x = 0.0f;
-	KeyFrame[17].movAvion_y = 35.0f;
-	KeyFrame[17].movAvion_z = 170.0f;
-	KeyFrame[17].giroAvion = 0.0f;
-
-	KeyFrame[18].movAvion_x = 0.0f;
-	KeyFrame[18].movAvion_y = 30.0f;
-	KeyFrame[18].movAvion_z = 180.0f;
-	KeyFrame[18].giroAvion = 0.0f;
-
-	KeyFrame[19].movAvion_x = 0.0f;
-	KeyFrame[19].movAvion_y = 35.0f;
-	KeyFrame[19].movAvion_z = 190.0f;
-	KeyFrame[19].giroAvion = 0.0f;
-
-	KeyFrame[20].movAvion_x = 0.0f;
-	KeyFrame[20].movAvion_y = 30.0f;
-	KeyFrame[20].movAvion_z = 200.0f;
-	KeyFrame[20].giroAvion = 0.0f;
-
-	KeyFrame[21].movAvion_x = -5.0f;
-	KeyFrame[21].movAvion_y = 35.0f;
-	KeyFrame[21].movAvion_z = 210.0f;
-	KeyFrame[21].giroAvion = 15.0f;
-
-	KeyFrame[22].movAvion_x = -10.0f;
-	KeyFrame[22].movAvion_y = 30.0f;
-	KeyFrame[22].movAvion_z = 220.0f;
-	KeyFrame[22].giroAvion = 30.0f;
-
-	KeyFrame[23].movAvion_x = -15.0f;
-	KeyFrame[23].movAvion_y = 35.0f;
-	KeyFrame[23].movAvion_z = 230.0f;
-	KeyFrame[23].giroAvion = 45.0f;
-
-	KeyFrame[24].movAvion_x = -20.0f;
-	KeyFrame[24].movAvion_y = 30.0f;
-	KeyFrame[24].movAvion_z = 235.0f;
-	KeyFrame[24].giroAvion = 60.0f;
-
-	KeyFrame[25].movAvion_x = -30.0f;
-	KeyFrame[25].movAvion_y = 35.0f;
-	KeyFrame[25].movAvion_z = 240.0f;
-	KeyFrame[25].giroAvion = 60.0f;
-
-	KeyFrame[26].movAvion_x = -40.0f;
-	KeyFrame[26].movAvion_y = 30.0f;
-	KeyFrame[26].movAvion_z = 245.0f;
-	KeyFrame[26].giroAvion = 75.0f;
-
-	KeyFrame[27].movAvion_x = -50.0f;
-	KeyFrame[27].movAvion_y = 35.0f;
-	KeyFrame[27].movAvion_z = 250.0f;
-	KeyFrame[27].giroAvion = 90.0f;
-
-	KeyFrame[28].movAvion_x = -60.0f;
-	KeyFrame[28].movAvion_y = 30.0f;
-	KeyFrame[28].movAvion_z = 245.0f;
-	KeyFrame[28].giroAvion = 105.0f;
-
-	KeyFrame[29].movAvion_x = -70.0f;
-	KeyFrame[29].movAvion_y = 35.0f;
-	KeyFrame[29].movAvion_z = 240.0f;
-	KeyFrame[29].giroAvion = 120.0f;
-
-	KeyFrame[30].movAvion_x = -75.0f;
-	KeyFrame[30].movAvion_y = 30.0f;
-	KeyFrame[30].movAvion_z = 230.0f;
-	KeyFrame[30].giroAvion = 135.0f;
-
-	KeyFrame[31].movAvion_x = -80.0f;
-	KeyFrame[31].movAvion_y = 35.0f;
-	KeyFrame[31].movAvion_z = 220.0f;
-	KeyFrame[31].giroAvion = 150.0f;
-
-	KeyFrame[32].movAvion_x = -85.0f;
-	KeyFrame[32].movAvion_y = 30.0f;
-	KeyFrame[32].movAvion_z = 210.0f;
-	KeyFrame[32].giroAvion = 165.0f;
-
-	KeyFrame[33].movAvion_x = -90.0f;
-	KeyFrame[33].movAvion_y = 35.0f;
-	KeyFrame[33].movAvion_z = 200.0f;
-	KeyFrame[33].giroAvion = 180.0f;
-
-	KeyFrame[34].movAvion_x = -90.0f;
-	KeyFrame[34].movAvion_y = 30.0f;
-	KeyFrame[34].movAvion_z = 190.0f;
-	KeyFrame[34].giroAvion = 180.0f;
-
-	KeyFrame[35].movAvion_x = -90.0f;
-	KeyFrame[35].movAvion_y = 35.0f;
-	KeyFrame[35].movAvion_z = 180.0f;
-	KeyFrame[35].giroAvion = 180.0f;
-
-	KeyFrame[36].movAvion_x = -90.0f;
-	KeyFrame[36].movAvion_y = 30.0f;
-	KeyFrame[36].movAvion_z = 170.0f;
-	KeyFrame[36].giroAvion = 180.0f;
-
-	KeyFrame[37].movAvion_x = -90.0f;
-	KeyFrame[37].movAvion_y = 35.0f;
-	KeyFrame[37].movAvion_z = 160.0f;
-	KeyFrame[37].giroAvion = 180.0f;
-
-	KeyFrame[38].movAvion_x = -90.0f;
-	KeyFrame[38].movAvion_y = 30.0f;
-	KeyFrame[38].movAvion_z = 150.0f;
-	KeyFrame[38].giroAvion = 180.0f;
-
-	KeyFrame[39].movAvion_x = -90.0f;
-	KeyFrame[39].movAvion_y = 35.0f;
-	KeyFrame[39].movAvion_z = 140.0f;
-	KeyFrame[39].giroAvion = 180.0f;
-
-	KeyFrame[40].movAvion_x = -90.0f;
-	KeyFrame[40].movAvion_y = 30.0f;
-	KeyFrame[40].movAvion_z = 130.0f;
-	KeyFrame[40].giroAvion = 180.0f;
-
-	KeyFrame[41].movAvion_x = -90.0f;
-	KeyFrame[41].movAvion_y = 35.0f;
-	KeyFrame[41].movAvion_z = 120.0f;
-	KeyFrame[41].giroAvion = 180.0f;
-
-	KeyFrame[42].movAvion_x = -90.0f;
-	KeyFrame[42].movAvion_y = 30.0f;
-	KeyFrame[42].movAvion_z = 110.0f;
-	KeyFrame[42].giroAvion = 180.0f;
-
-	KeyFrame[43].movAvion_x = -90.0f;
-	KeyFrame[43].movAvion_y = 35.0f;
-	KeyFrame[43].movAvion_z = 100.0f;
-	KeyFrame[43].giroAvion = 180.0f;
-
-	KeyFrame[44].movAvion_x = -90.0f;
-	KeyFrame[44].movAvion_y = 30.0f;
-	KeyFrame[44].movAvion_z = 90.0f;
-	KeyFrame[44].giroAvion = 180.0f;
-
-	KeyFrame[44].movAvion_x = -90.0f;
-	KeyFrame[44].movAvion_y = 35.0f;
-	KeyFrame[44].movAvion_z = 80.0f;
-	KeyFrame[44].giroAvion = 180.0f;
-
-	KeyFrame[45].movAvion_x = -90.0f;
-	KeyFrame[45].movAvion_y = 30.0f;
-	KeyFrame[45].movAvion_z = 70.0f;
-	KeyFrame[45].giroAvion = 180.0f;
-
-	KeyFrame[46].movAvion_x = -90.0f;
-	KeyFrame[46].movAvion_y = 35.0f;
-	KeyFrame[46].movAvion_z = 60.0f;
-	KeyFrame[46].giroAvion = 180.0f;
-
-	KeyFrame[47].movAvion_x = -90.0f;
-	KeyFrame[47].movAvion_y = 30.0f;
-	KeyFrame[47].movAvion_z = 50.0f;
-	KeyFrame[47].giroAvion = 180.0f;
-
-	KeyFrame[48].movAvion_x = -90.0f;
-	KeyFrame[48].movAvion_y = 35.0f;
-	KeyFrame[48].movAvion_z = 40.0f;
-	KeyFrame[48].giroAvion = 180.0f;
-
-	KeyFrame[49].movAvion_x = -90.0f;
-	KeyFrame[49].movAvion_y = 30.0f;
-	KeyFrame[49].movAvion_z = 30.0f;
-	KeyFrame[49].giroAvion = 180.0f;
-
-	KeyFrame[50].movAvion_x = -90.0f;
-	KeyFrame[50].movAvion_y = 35.0f;
-	KeyFrame[50].movAvion_z = 20.0f;
-	KeyFrame[50].giroAvion = 180.0f;
-
-	KeyFrame[51].movAvion_x = -90.0f;
-	KeyFrame[51].movAvion_y = 30.0f;
-	KeyFrame[51].movAvion_z = 10.0f;
-	KeyFrame[51].giroAvion = 180.0f;
-
-	KeyFrame[52].movAvion_x = -90.0f;
-	KeyFrame[52].movAvion_y = 35.0f;
-	KeyFrame[52].movAvion_z = 0.0f;
-	KeyFrame[52].giroAvion = 180.0f;
-
-	KeyFrame[53].movAvion_x = -85.0f;
-	KeyFrame[53].movAvion_y = 30.0f;
-	KeyFrame[53].movAvion_z = -10.0f;
-	KeyFrame[53].giroAvion = 195.0f;
-
-	KeyFrame[54].movAvion_x = -80.0f;
-	KeyFrame[54].movAvion_y = 35.0f;
-	KeyFrame[54].movAvion_z = -20.0f;
-	KeyFrame[54].giroAvion = 210.0f;
-
-	KeyFrame[55].movAvion_x = -75.0f;
-	KeyFrame[55].movAvion_y = 30.0f;
-	KeyFrame[55].movAvion_z = -30.0f;
-	KeyFrame[55].giroAvion = 225.0f;
-
-	KeyFrame[56].movAvion_x = -65.0f;
-	KeyFrame[56].movAvion_y = 35.0f;
-	KeyFrame[56].movAvion_z = -35.0f;
-	KeyFrame[56].giroAvion = 240.0f;
-
-	KeyFrame[57].movAvion_x = -55.0f;
-	KeyFrame[57].movAvion_y = 30.0f;
-	KeyFrame[57].movAvion_z = -40.0f;
-	KeyFrame[57].giroAvion = 255.0f;
-
-	KeyFrame[58].movAvion_x = -45.0f;
-	KeyFrame[58].movAvion_y = 35.0f;
-	KeyFrame[58].movAvion_z = -45.0f;
-	KeyFrame[58].giroAvion = 270.0f;
-
-	KeyFrame[59].movAvion_x = -35.0f;
-	KeyFrame[59].movAvion_y = 30.0f;
-	KeyFrame[59].movAvion_z = -40.0f;
-	KeyFrame[59].giroAvion = 285.0f;
-
-	KeyFrame[60].movAvion_x = -25.0f;
-	KeyFrame[60].movAvion_y = 20.0f;
-	KeyFrame[60].movAvion_z = -35.0f;
-	KeyFrame[60].giroAvion = 300.0f;
-
-	KeyFrame[61].movAvion_x = -15.0f;
-	KeyFrame[61].movAvion_y = 15.0f;
-	KeyFrame[61].movAvion_z = -30.0f;
-	KeyFrame[61].giroAvion = 315.0f;
-
-	KeyFrame[62].movAvion_x = -10.0f;
-	KeyFrame[62].movAvion_y = 10.0f;
-	KeyFrame[62].movAvion_z = -20.0f;
-	KeyFrame[62].giroAvion = 330.0f;
-
-	KeyFrame[63].movAvion_x = -5.0f;
-	KeyFrame[63].movAvion_y = 5.0f;
-	KeyFrame[63].movAvion_z = -10.0f;
-	KeyFrame[63].giroAvion = 345.0f;
-
-	KeyFrame[64].movAvion_x = 0.0f;
-	KeyFrame[64].movAvion_y = 0.0f;
-	KeyFrame[64].movAvion_z = 0.0f;
-	KeyFrame[64].giroAvion = 360.0f;
+	KeyFrame[0].movModelo_x = 0.0f;
+	KeyFrame[0].movModelo_y = 0.0f;
+	KeyFrame[0].movModelo_z = 0.0f;
+	KeyFrame[0].giroModeloX = 0.0f;
+	KeyFrame[0].giroModeloY = 0.0f;
+	KeyFrame[0].giroModeloZ = 0.0f;
+
+
+	KeyFrame[1].movModelo_x = 0.0f;
+	KeyFrame[1].movModelo_y = 2.0f;
+	KeyFrame[1].movModelo_z = 0.0f;
+	KeyFrame[1].giroModeloX = -30.0f;
+	KeyFrame[1].giroModeloY = 0.0f;
+	KeyFrame[1].giroModeloZ = 0.0f;
+
+
+	KeyFrame[2].movModelo_x = 0.0f;
+	KeyFrame[2].movModelo_y = 4.0f;
+	KeyFrame[2].movModelo_z = 0.0f;
+	KeyFrame[2].giroModeloX = 0.0f;
+	KeyFrame[2].giroModeloY = 0.0f;
+	KeyFrame[2].giroModeloZ = 0.0f;
+
+	KeyFrame[3].movModelo_x = 0.0f;
+	KeyFrame[3].movModelo_y = 6.0f;
+	KeyFrame[3].movModelo_z = 0.0f;
+	KeyFrame[3].giroModeloX = 30.0f;
+	KeyFrame[3].giroModeloY = 0.0f;
+	KeyFrame[3].giroModeloZ = 0.0f;
+
+	KeyFrame[4].movModelo_x = 0.0f;
+	KeyFrame[4].movModelo_y = 4.0f;
+	KeyFrame[4].movModelo_z = 0.0f;
+	KeyFrame[4].giroModeloX = 0.0f;
+	KeyFrame[4].giroModeloY = 0.0f;
+	KeyFrame[4].giroModeloZ = 0.0f;
+
+	KeyFrame[5].movModelo_x = 0.0f;
+	KeyFrame[5].movModelo_y = 2.0f;
+	KeyFrame[5].movModelo_z = 0.0f;
+	KeyFrame[5].giroModeloX = -30.0f;
+	KeyFrame[5].giroModeloY = 0.0f;
+	KeyFrame[5].giroModeloZ = 0.0f;
+
+	KeyFrame[6].movModelo_x = 0.0f;
+	KeyFrame[6].movModelo_y = 0.0f;
+	KeyFrame[6].movModelo_z = 0.0f;
+	KeyFrame[6].giroModeloX = 0.0f;
+	KeyFrame[6].giroModeloY = 0.0f;
+	KeyFrame[6].giroModeloZ = 0.0f;
+
+	KeyFrame[7].movModelo_x = 0.0f;
+	KeyFrame[7].movModelo_y = 2.0f;
+	KeyFrame[7].movModelo_z = 0.0f;
+	KeyFrame[7].giroModeloX = -30.0f;
+	KeyFrame[7].giroModeloY = 0.0f;
+	KeyFrame[7].giroModeloZ = 0.0f;
+
+	KeyFrame[8].movModelo_x = 0.0f;
+	KeyFrame[8].movModelo_y = 4.0f;
+	KeyFrame[8].movModelo_z = 0.0f;
+	KeyFrame[8].giroModeloX = 0.0f;
+	KeyFrame[8].giroModeloY = 0.0f;
+	KeyFrame[8].giroModeloZ = 0.0f;
+
+	KeyFrame[9].movModelo_x = 0.0f;
+	KeyFrame[9].movModelo_y = 6.0f;
+	KeyFrame[9].movModelo_z = 0.0f;
+	KeyFrame[9].giroModeloX = 30.0f;
+	KeyFrame[9].giroModeloY = 0.0f;
+	KeyFrame[9].giroModeloZ = 0.0f;
+
+	KeyFrame[10].movModelo_x = 0.0f;
+	KeyFrame[10].movModelo_y = 8.0f;
+	KeyFrame[10].movModelo_z = 0.0f;
+	KeyFrame[10].giroModeloX = 0.0f;
+	KeyFrame[10].giroModeloY = 0.0f;
+	KeyFrame[10].giroModeloZ = 0.0f;
+
+	KeyFrame[11].movModelo_x = 0.0f;
+	KeyFrame[11].movModelo_y = 6.0f;
+	KeyFrame[11].movModelo_z = 0.0f;
+	KeyFrame[11].giroModeloX = -30.0f;
+	KeyFrame[11].giroModeloY = 0.0f;
+	KeyFrame[11].giroModeloZ = 0.0f;
+
+	KeyFrame[12].movModelo_x = 0.0f;
+	KeyFrame[12].movModelo_y = 4.0f;
+	KeyFrame[12].movModelo_z = 0.0f;
+	KeyFrame[12].giroModeloX = 0.0f;
+	KeyFrame[12].giroModeloY = 0.0f;
+	KeyFrame[12].giroModeloZ = 0.0f;
+
+	KeyFrame[13].movModelo_x = 0.0f;
+	KeyFrame[13].movModelo_y = 2.0f;
+	KeyFrame[13].movModelo_z = 0.0f;
+	KeyFrame[13].giroModeloX = 30.0f;
+	KeyFrame[13].giroModeloY = 0.0f;
+	KeyFrame[13].giroModeloZ = 0.0f;
+
+	KeyFrame[14].movModelo_x = 0.0f;
+	KeyFrame[14].movModelo_y = 0.0f;
+	KeyFrame[14].movModelo_z = 0.0f;
+	KeyFrame[14].giroModeloX = 0.0f;
+	KeyFrame[14].giroModeloY = 0.0f;
+	KeyFrame[14].giroModeloZ = 0.0f;
+
+	KeyFrame[15].movModelo_x = 0.0f;
+	KeyFrame[15].movModelo_y = 0.1f;
+	KeyFrame[15].movModelo_z = 0.0f;
+	KeyFrame[15].giroModeloX = 0.0f;
+	KeyFrame[15].giroModeloY =-30.0f;
+	KeyFrame[15].giroModeloZ = 0.0f;
+
+	KeyFrame[16].movModelo_x = 0.0f;
+	KeyFrame[16].movModelo_y = 0.15f;
+	KeyFrame[16].movModelo_z = 0.0f;
+	KeyFrame[16].giroModeloX = 0.0f;
+	KeyFrame[16].giroModeloY = -60.0f;
+	KeyFrame[16].giroModeloZ = 0.0f;
+
+	KeyFrame[17].movModelo_x = 0.0f;
+	KeyFrame[17].movModelo_y = 0.2f;
+	KeyFrame[17].movModelo_z = 0.0f;
+	KeyFrame[17].giroModeloX = 0.0f;
+	KeyFrame[17].giroModeloY = -90.0f;
+	KeyFrame[17].giroModeloZ = 0.0f;
+
+	KeyFrame[18].movModelo_x = 0.0f;
+	KeyFrame[18].movModelo_y = 0.25f;
+	KeyFrame[18].movModelo_z = 0.0f;
+	KeyFrame[18].giroModeloX = 0.0f;
+	KeyFrame[18].giroModeloY = -90.0f;
+	KeyFrame[18].giroModeloZ = 0.0f;
+
+	KeyFrame[19].movModelo_x = 0.0f;
+	KeyFrame[19].movModelo_y = 0.25f;
+	KeyFrame[19].movModelo_z = -5.0f;
+	KeyFrame[19].giroModeloX = 10.0f;
+	KeyFrame[19].giroModeloY = -90.0f;
+	KeyFrame[19].giroModeloZ = 0.0f;
+
+	KeyFrame[20].movModelo_x = 0.0f;
+	KeyFrame[20].movModelo_y = 0.25f;
+	KeyFrame[20].movModelo_z = -10.0f;
+	KeyFrame[20].giroModeloX = 20.0f;
+	KeyFrame[20].giroModeloY = -90.0f;
+	KeyFrame[20].giroModeloZ = 0.0f;
+
+	KeyFrame[21].movModelo_x = 0.0f;
+	KeyFrame[21].movModelo_y = 0.25f;
+	KeyFrame[21].movModelo_z = -15.0f;
+	KeyFrame[21].giroModeloX = 30.0f;
+	KeyFrame[21].giroModeloY = -90.0f;
+	KeyFrame[21].giroModeloZ = 0.0f;
+
+	KeyFrame[22].movModelo_x = 0.0f;
+	KeyFrame[22].movModelo_y = 0.25f;
+	KeyFrame[22].movModelo_z = -20.0f;
+	KeyFrame[22].giroModeloX = 40.0f;
+	KeyFrame[22].giroModeloY = -90.0f;
+	KeyFrame[22].giroModeloZ = 0.0f;
+
+	KeyFrame[23].movModelo_x = 0.0f;
+	KeyFrame[23].movModelo_y = 0.25f;
+	KeyFrame[23].movModelo_z = -25.0f;
+	KeyFrame[23].giroModeloX = 50.0f;
+	KeyFrame[23].giroModeloY = -90.0f;
+	KeyFrame[23].giroModeloZ = 0.0f;
+
+	KeyFrame[24].movModelo_x = 0.0f;
+	KeyFrame[24].movModelo_y = 0.25f;
+	KeyFrame[24].movModelo_z = -30.0f;
+	KeyFrame[24].giroModeloX = 60.0f;
+	KeyFrame[24].giroModeloY = -90.0f;
+	KeyFrame[24].giroModeloZ = 0.0f;
+
+	KeyFrame[25].movModelo_x = 0.0f;
+	KeyFrame[25].movModelo_y = 0.25f;
+	KeyFrame[25].movModelo_z = -35.0f;
+	KeyFrame[25].giroModeloX = 70.0f;
+	KeyFrame[25].giroModeloY = -90.0f;
+	KeyFrame[25].giroModeloZ = 0.0f;
+
+	KeyFrame[26].movModelo_x = 0.0f;
+	KeyFrame[26].movModelo_y = 0.25f;
+	KeyFrame[26].movModelo_z = -40.0f;
+	KeyFrame[26].giroModeloX = 80.0f;
+	KeyFrame[26].giroModeloY = -90.0f;
+	KeyFrame[26].giroModeloZ = 0.0f;
+
+	KeyFrame[27].movModelo_x = 0.0f;
+	KeyFrame[27].movModelo_y = 0.25f;
+	KeyFrame[27].movModelo_z = -45.0f;
+	KeyFrame[27].giroModeloX = 90.0f;
+	KeyFrame[27].giroModeloY = -90.0f;
+	KeyFrame[27].giroModeloZ = 0.0f;
+
+	KeyFrame[28].movModelo_x = 0.0f;
+	KeyFrame[28].movModelo_y = 0.25f;
+	KeyFrame[28].movModelo_z = -50.0f;
+	KeyFrame[28].giroModeloX = 100.0f;
+	KeyFrame[28].giroModeloY = -90.0f;
+	KeyFrame[28].giroModeloZ = 0.0f;
+
+	KeyFrame[29].movModelo_x = 0.0f;
+	KeyFrame[29].movModelo_y = 0.25f;
+	KeyFrame[29].movModelo_z = -55.0f;
+	KeyFrame[29].giroModeloX = 110.0f;
+	KeyFrame[29].giroModeloY = -90.0f;
+	KeyFrame[29].giroModeloZ = 0.0f;
+
+	KeyFrame[30].movModelo_x = 0.0f;
+	KeyFrame[30].movModelo_y = 0.25f;
+	KeyFrame[30].movModelo_z = -60.0f;
+	KeyFrame[30].giroModeloX = 120.0f;
+	KeyFrame[30].giroModeloY = -90.0f;
+	KeyFrame[30].giroModeloZ = 0.0f;
+
+	KeyFrame[31].movModelo_x = 0.0f;
+	KeyFrame[31].movModelo_y = 0.25f;
+	KeyFrame[31].movModelo_z = -65.0f;
+	KeyFrame[31].giroModeloX = 130.0f;
+	KeyFrame[31].giroModeloY = -90.0f;
+	KeyFrame[31].giroModeloZ = 0.0f;
+
+	KeyFrame[32].movModelo_x = 0.0f;
+	KeyFrame[32].movModelo_y = 0.25f;
+	KeyFrame[32].movModelo_z = -70.0f;
+	KeyFrame[32].giroModeloX = 140.0f;
+	KeyFrame[32].giroModeloY = -90.0f;
+	KeyFrame[32].giroModeloZ = 0.0f;
+
+	KeyFrame[33].movModelo_x = 0.0f;
+	KeyFrame[33].movModelo_y = 0.25f;
+	KeyFrame[33].movModelo_z = -75.0f;
+	KeyFrame[33].giroModeloX = 150.0f;
+	KeyFrame[33].giroModeloY = -90.0f;
+	KeyFrame[33].giroModeloZ = 0.0f;
+
+	KeyFrame[34].movModelo_x = 0.0f;
+	KeyFrame[34].movModelo_y = 0.25f;
+	KeyFrame[34].movModelo_z = -80.0f;
+	KeyFrame[34].giroModeloX = 160.0f;
+	KeyFrame[34].giroModeloY = -90.0f;
+	KeyFrame[34].giroModeloZ = 0.0f;
+
+	KeyFrame[35].movModelo_x = 0.0f;
+	KeyFrame[35].movModelo_y = 0.25f;
+	KeyFrame[35].movModelo_z = -85.0f;
+	KeyFrame[35].giroModeloX = 170.0f;
+	KeyFrame[35].giroModeloY = -90.0f;
+	KeyFrame[35].giroModeloZ = 0.0f;
+
+	KeyFrame[36].movModelo_x = 0.0f;
+	KeyFrame[36].movModelo_y = 0.25f;
+	KeyFrame[36].movModelo_z = -90.0f;
+	KeyFrame[36].giroModeloX = 180.0f;
+	KeyFrame[36].giroModeloY = -90.0f;
+	KeyFrame[36].giroModeloZ = 0.0f;
+
+	KeyFrame[37].movModelo_x = 0.0f;
+	KeyFrame[37].movModelo_y = 0.25f;
+	KeyFrame[37].movModelo_z = -95.0f;
+	KeyFrame[37].giroModeloX = 190.0f;
+	KeyFrame[37].giroModeloY = -90.0f;
+	KeyFrame[37].giroModeloZ = 0.0f;
+
+	KeyFrame[38].movModelo_x = 0.0f;
+	KeyFrame[38].movModelo_y = 0.25f;
+	KeyFrame[38].movModelo_z = -100.0f;
+	KeyFrame[38].giroModeloX = 200.0f;
+	KeyFrame[38].giroModeloY = -90.0f;
+	KeyFrame[38].giroModeloZ = 0.0f;
+
+	KeyFrame[39].movModelo_x = 0.0f;
+	KeyFrame[39].movModelo_y = 0.25f;
+	KeyFrame[39].movModelo_z = -105.0f;
+	KeyFrame[39].giroModeloX = 210.0f;
+	KeyFrame[39].giroModeloY = -90.0f;
+	KeyFrame[39].giroModeloZ = 0.0f;
+
+	KeyFrame[40].movModelo_x = 0.0f;
+	KeyFrame[40].movModelo_y = 0.25f;
+	KeyFrame[40].movModelo_z = -110.0f;
+	KeyFrame[40].giroModeloX = 220.0f;
+	KeyFrame[40].giroModeloY = -90.0f;
+	KeyFrame[40].giroModeloZ = 0.0f;
+
+	KeyFrame[41].movModelo_x = 0.0f;
+	KeyFrame[41].movModelo_y = 0.25f;
+	KeyFrame[41].movModelo_z = -115.0f;
+	KeyFrame[41].giroModeloX = 230.0f;
+	KeyFrame[41].giroModeloY = -90.0f;
+	KeyFrame[41].giroModeloZ = 0.0f;
+
+	KeyFrame[42].movModelo_x = 0.0f;
+	KeyFrame[42].movModelo_y = 0.25f;
+	KeyFrame[42].movModelo_z = -120.0f;
+	KeyFrame[42].giroModeloX = 240.0f;
+	KeyFrame[42].giroModeloY = -90.0f;
+	KeyFrame[42].giroModeloZ = 0.0f;
+
+	KeyFrame[43].movModelo_x = 0.0f;
+	KeyFrame[43].movModelo_y = 0.25f;
+	KeyFrame[43].movModelo_z = -125.0f;
+	KeyFrame[43].giroModeloX = 250.0f;
+	KeyFrame[43].giroModeloY = -90.0f;
+	KeyFrame[43].giroModeloZ = 0.0f;
+
+	KeyFrame[44].movModelo_x = 0.0f;
+	KeyFrame[44].movModelo_y = 0.25f;
+	KeyFrame[44].movModelo_z = -130.0f;
+	KeyFrame[44].giroModeloX = 260.0f;
+	KeyFrame[44].giroModeloY = -90.0f;
+	KeyFrame[44].giroModeloZ = 0.0f;
+
+	KeyFrame[45].movModelo_x = 0.0f;
+	KeyFrame[45].movModelo_y = 0.25f;
+	KeyFrame[45].movModelo_z = -135.0f;
+	KeyFrame[45].giroModeloX = 270.0f;
+	KeyFrame[45].giroModeloY = -90.0f;
+	KeyFrame[45].giroModeloZ = 0.0f;
+
+	KeyFrame[45].movModelo_x = 0.0f;
+	KeyFrame[45].movModelo_y = 0.25f;
+	KeyFrame[45].movModelo_z = -140.0f;
+	KeyFrame[45].giroModeloX = 280.0f;
+	KeyFrame[45].giroModeloY = -90.0f;
+	KeyFrame[45].giroModeloZ = 0.0f;
+
+	KeyFrame[46].movModelo_x = 0.0f;
+	KeyFrame[46].movModelo_y = 0.25f;
+	KeyFrame[46].movModelo_z = -145.0f;
+	KeyFrame[46].giroModeloX = 290.0f;
+	KeyFrame[46].giroModeloY = -90.0f;
+	KeyFrame[46].giroModeloZ = 0.0f;
+
+	KeyFrame[47].movModelo_x = 0.0f;
+	KeyFrame[47].movModelo_y = 0.25f;
+	KeyFrame[47].movModelo_z = -150.0f;
+	KeyFrame[47].giroModeloX = 300.0f;
+	KeyFrame[47].giroModeloY = -90.0f;
+	KeyFrame[47].giroModeloZ = 0.0f;
+
+	KeyFrame[48].movModelo_x = 0.0f;
+	KeyFrame[48].movModelo_y = 0.25f;
+	KeyFrame[48].movModelo_z = -150.0f;
+	KeyFrame[48].giroModeloX = 300.0f;
+	KeyFrame[48].giroModeloY = -60.0f;
+	KeyFrame[48].giroModeloZ = 0.0f;
+
+	KeyFrame[49].movModelo_x = 0.0f;
+	KeyFrame[49].movModelo_y = 0.25f;
+	KeyFrame[49].movModelo_z = -150.0f;
+	KeyFrame[49].giroModeloX = 300.0f;
+	KeyFrame[49].giroModeloY = -30.0f;
+	KeyFrame[49].giroModeloZ = 0.0f;
+
+	KeyFrame[50].movModelo_x = 0.0f;
+	KeyFrame[50].movModelo_y = 0.25f;
+	KeyFrame[50].movModelo_z = -150.0f;
+	KeyFrame[50].giroModeloX = 300.0f;
+	KeyFrame[50].giroModeloY = 0.0f;
+	KeyFrame[50].giroModeloZ = 0.0f;
+
+	KeyFrame[51].movModelo_x = 0.0f;
+	KeyFrame[51].movModelo_y = 4.25f;
+	KeyFrame[51].movModelo_z = -150.0f;
+	KeyFrame[51].giroModeloX = 300.0f;
+	KeyFrame[51].giroModeloY = 0.0f;
+	KeyFrame[51].giroModeloZ = 0.0f;
+
+	KeyFrame[52].movModelo_x = 0.0f;
+	KeyFrame[52].movModelo_y = 8.25f;
+	KeyFrame[52].movModelo_z = -150.0f;
+	KeyFrame[52].giroModeloX = 300.0f;
+	KeyFrame[52].giroModeloY = 0.0f;
+	KeyFrame[52].giroModeloZ = 0.0f;
+
+	KeyFrame[53].movModelo_x = 0.0f;
+	KeyFrame[53].movModelo_y = 4.25f;
+	KeyFrame[53].movModelo_z = -150.0f;
+	KeyFrame[53].giroModeloX = 300.0f;
+	KeyFrame[53].giroModeloY = 0.0f;
+	KeyFrame[53].giroModeloZ = 0.0f;
+
+	KeyFrame[54].movModelo_x = 0.0f;
+	KeyFrame[54].movModelo_y = 0.25f;
+	KeyFrame[54].movModelo_z = -150.0f;
+	KeyFrame[54].giroModeloX = 300.0f;
+	KeyFrame[54].giroModeloY = 0.0f;
+	KeyFrame[54].giroModeloZ = 0.0f;
+
+	KeyFrame[55].movModelo_x = 0.0f;
+	KeyFrame[55].movModelo_y = 0.25f;
+	KeyFrame[55].movModelo_z = -150.0f;
+	KeyFrame[55].giroModeloX = 300.0f;
+	KeyFrame[55].giroModeloY = 30.0f;
+	KeyFrame[55].giroModeloZ = 0.0f;
+
+	KeyFrame[56].movModelo_x = 0.0f;
+	KeyFrame[56].movModelo_y = 0.25f;
+	KeyFrame[56].movModelo_z = -150.0f;
+	KeyFrame[56].giroModeloX = 300.0f;
+	KeyFrame[56].giroModeloY = 60.0f;
+	KeyFrame[56].giroModeloZ = 0.0f;
+
+	KeyFrame[57].movModelo_x = 0.0f;
+	KeyFrame[57].movModelo_y = 0.25f;
+	KeyFrame[57].movModelo_z = -150.0f;
+	KeyFrame[57].giroModeloX = 300.0f;
+	KeyFrame[57].giroModeloY = 90.0f;
+	KeyFrame[57].giroModeloZ = 0.0f;
+
+	KeyFrame[58].movModelo_x = 0.0f;
+	KeyFrame[58].movModelo_y = 0.25f;
+	KeyFrame[58].movModelo_z = -145.0f;
+	KeyFrame[58].giroModeloX = 290.0f;
+	KeyFrame[58].giroModeloY = 90.0f;
+	KeyFrame[58].giroModeloZ = 0.0f;
+
+	KeyFrame[59].movModelo_x = 0.0f;
+	KeyFrame[59].movModelo_y = 0.25f;
+	KeyFrame[59].movModelo_z = -140.0f;
+	KeyFrame[59].giroModeloX = 280.0f;
+	KeyFrame[59].giroModeloY = 90.0f;
+	KeyFrame[59].giroModeloZ = 0.0f;
+
+	KeyFrame[60].movModelo_x = 0.0f;
+	KeyFrame[60].movModelo_y = 0.25f;
+	KeyFrame[60].movModelo_z = -135.0f;
+	KeyFrame[60].giroModeloX = 270.0f;
+	KeyFrame[60].giroModeloY = 90.0f;
+	KeyFrame[60].giroModeloZ = 0.0f;
+
+	KeyFrame[61].movModelo_x = 0.0f;
+	KeyFrame[61].movModelo_y = 0.25f;
+	KeyFrame[61].movModelo_z = -130.0f;
+	KeyFrame[61].giroModeloX = 260.0f;
+	KeyFrame[61].giroModeloY = 90.0f;
+	KeyFrame[61].giroModeloZ = 0.0f;
+
+	KeyFrame[62].movModelo_x = 0.0f;
+	KeyFrame[62].movModelo_y = 0.25f;
+	KeyFrame[62].movModelo_z = -125.0f;
+	KeyFrame[62].giroModeloX = 250.0f;
+	KeyFrame[62].giroModeloY = 90.0f;
+	KeyFrame[62].giroModeloZ = 0.0f;
+
+	KeyFrame[63].movModelo_x = 0.0f;
+	KeyFrame[63].movModelo_y = 0.25f;
+	KeyFrame[63].movModelo_z = -120.0f;
+	KeyFrame[63].giroModeloX = 240.0f;
+	KeyFrame[63].giroModeloY = 90.0f;
+	KeyFrame[63].giroModeloZ = 0.0f;
+
+	KeyFrame[64].movModelo_x = 0.0f;
+	KeyFrame[64].movModelo_y = 0.25f;
+	KeyFrame[64].movModelo_z = -115.0f;
+	KeyFrame[64].giroModeloX = 230.0f;
+	KeyFrame[64].giroModeloY = 90.0f;
+	KeyFrame[64].giroModeloZ = 0.0f;
+
+	KeyFrame[65].movModelo_x = 0.0f;
+	KeyFrame[65].movModelo_y = 0.25f;
+	KeyFrame[65].movModelo_z = -110.0f;
+	KeyFrame[65].giroModeloX = 220.0f;
+	KeyFrame[65].giroModeloY = 90.0f;
+	KeyFrame[65].giroModeloZ = 0.0f;
+
+	KeyFrame[66].movModelo_x = 0.0f;
+	KeyFrame[66].movModelo_y = 0.25f;
+	KeyFrame[66].movModelo_z = -105.0f;
+	KeyFrame[66].giroModeloX = 210.0f;
+	KeyFrame[66].giroModeloY = 90.0f;
+	KeyFrame[66].giroModeloZ = 0.0f;
+
+	KeyFrame[67].movModelo_x = 0.0f;
+	KeyFrame[67].movModelo_y = 0.25f;
+	KeyFrame[67].movModelo_z = -100.0f;
+	KeyFrame[67].giroModeloX = 200.0f;
+	KeyFrame[67].giroModeloY = 90.0f;
+	KeyFrame[67].giroModeloZ = 0.0f;
+
+	KeyFrame[68].movModelo_x = 0.0f;
+	KeyFrame[68].movModelo_y = 0.25f;
+	KeyFrame[68].movModelo_z = -95.0f;
+	KeyFrame[68].giroModeloX = 190.0f;
+	KeyFrame[68].giroModeloY = 90.0f;
+	KeyFrame[68].giroModeloZ = 0.0f;
+
+	KeyFrame[69].movModelo_x = 0.0f;
+	KeyFrame[69].movModelo_y = 0.25f;
+	KeyFrame[69].movModelo_z = -90.0f;
+	KeyFrame[69].giroModeloX = 180.0f;
+	KeyFrame[69].giroModeloY = 90.0f;
+	KeyFrame[69].giroModeloZ = 0.0f;
+
+	KeyFrame[70].movModelo_x = 0.0f;
+	KeyFrame[70].movModelo_y = 0.25f;
+	KeyFrame[70].movModelo_z = -85.0f;
+	KeyFrame[70].giroModeloX = 170.0f;
+	KeyFrame[70].giroModeloY = 90.0f;
+	KeyFrame[70].giroModeloZ = 0.0f;
+
+	KeyFrame[71].movModelo_x = 0.0f;
+	KeyFrame[71].movModelo_y = 0.25f;
+	KeyFrame[71].movModelo_z = -80.0f;
+	KeyFrame[71].giroModeloX = 160.0f;
+	KeyFrame[71].giroModeloY = 90.0f;
+	KeyFrame[71].giroModeloZ = 0.0f;
+
+	KeyFrame[72].movModelo_x = 0.0f;
+	KeyFrame[72].movModelo_y = 0.25f;
+	KeyFrame[72].movModelo_z = -75.0f;
+	KeyFrame[72].giroModeloX = 150.0f;
+	KeyFrame[72].giroModeloY = 90.0f;
+	KeyFrame[72].giroModeloZ = 0.0f;
+
+	KeyFrame[73].movModelo_x = 0.0f;
+	KeyFrame[73].movModelo_y = 0.25f;
+	KeyFrame[73].movModelo_z = -70.0f;
+	KeyFrame[73].giroModeloX = 140.0f;
+	KeyFrame[73].giroModeloY = 90.0f;
+	KeyFrame[73].giroModeloZ = 0.0f;
+
+	KeyFrame[74].movModelo_x = 0.0f;
+	KeyFrame[74].movModelo_y = 0.25f;
+	KeyFrame[74].movModelo_z = -65.0f;
+	KeyFrame[74].giroModeloX = 130.0f;
+	KeyFrame[74].giroModeloY = 90.0f;
+	KeyFrame[74].giroModeloZ = 0.0f;
+
+	KeyFrame[75].movModelo_x = 0.0f;
+	KeyFrame[75].movModelo_y = 0.25f;
+	KeyFrame[75].movModelo_z = -60.0f;
+	KeyFrame[75].giroModeloX = 120.0f;
+	KeyFrame[75].giroModeloY = 90.0f;
+	KeyFrame[75].giroModeloZ = 0.0f;
+
+	KeyFrame[76].movModelo_x = 0.0f;
+	KeyFrame[76].movModelo_y = 0.25f;
+	KeyFrame[76].movModelo_z = -55.0f;
+	KeyFrame[76].giroModeloX = 110.0f;
+	KeyFrame[76].giroModeloY = 90.0f;
+	KeyFrame[76].giroModeloZ = 0.0f;
+
+	KeyFrame[77].movModelo_x = 0.0f;
+	KeyFrame[77].movModelo_y = 0.25f;
+	KeyFrame[77].movModelo_z = -50.0f;
+	KeyFrame[77].giroModeloX = 100.0f;
+	KeyFrame[77].giroModeloY = 90.0f;
+	KeyFrame[77].giroModeloZ = 0.0f;
+
+	KeyFrame[78].movModelo_x = 0.0f;
+	KeyFrame[78].movModelo_y = 0.25f;
+	KeyFrame[78].movModelo_z = -45.0f;
+	KeyFrame[78].giroModeloX = 90.0f;
+	KeyFrame[78].giroModeloY = 90.0f;
+	KeyFrame[78].giroModeloZ = 0.0f;
+
+	KeyFrame[79].movModelo_x = 0.0f;
+	KeyFrame[79].movModelo_y = 0.25f;
+	KeyFrame[79].movModelo_z = -40.0f;
+	KeyFrame[79].giroModeloX = 80.0f;
+	KeyFrame[79].giroModeloY = 90.0f;
+	KeyFrame[79].giroModeloZ = 0.0f;
+
+	KeyFrame[80].movModelo_x = 0.0f;
+	KeyFrame[80].movModelo_y = 0.25f;
+	KeyFrame[80].movModelo_z = -35.0f;
+	KeyFrame[80].giroModeloX = 70.0f;
+	KeyFrame[80].giroModeloY = 90.0f;
+	KeyFrame[80].giroModeloZ = 0.0f;
+
+	KeyFrame[81].movModelo_x = 0.0f;
+	KeyFrame[81].movModelo_y = 0.25f;
+	KeyFrame[81].movModelo_z = -30.0f;
+	KeyFrame[81].giroModeloX = 60.0f;
+	KeyFrame[81].giroModeloY = 90.0f;
+	KeyFrame[81].giroModeloZ = 0.0f;
+
+	KeyFrame[82].movModelo_x = 0.0f;
+	KeyFrame[82].movModelo_y = 0.25f;
+	KeyFrame[82].movModelo_z = -25.0f;
+	KeyFrame[82].giroModeloX = 50.0f;
+	KeyFrame[82].giroModeloY = 90.0f;
+	KeyFrame[82].giroModeloZ = 0.0f;
+
+	KeyFrame[83].movModelo_x = 0.0f;
+	KeyFrame[83].movModelo_y = 0.25f;
+	KeyFrame[83].movModelo_z = -20.0f;
+	KeyFrame[83].giroModeloX = 40.0f;
+	KeyFrame[83].giroModeloY = 90.0f;
+	KeyFrame[83].giroModeloZ = 0.0f;
+
+	KeyFrame[84].movModelo_x = 0.0f;
+	KeyFrame[84].movModelo_y = 0.25f;
+	KeyFrame[84].movModelo_z = -15.0f;
+	KeyFrame[84].giroModeloX = 30.0f;
+	KeyFrame[84].giroModeloY = 90.0f;
+	KeyFrame[84].giroModeloZ = 0.0f;
+
+	KeyFrame[85].movModelo_x = 0.0f;
+	KeyFrame[85].movModelo_y = 0.25f;
+	KeyFrame[85].movModelo_z = -10.0f;
+	KeyFrame[85].giroModeloX = 20.0f;
+	KeyFrame[85].giroModeloY = 90.0f;
+	KeyFrame[85].giroModeloZ = 0.0f;
+
+	KeyFrame[86].movModelo_x = 0.0f;
+	KeyFrame[86].movModelo_y = 0.25f;
+	KeyFrame[86].movModelo_z = -5.0f;
+	KeyFrame[86].giroModeloX = 10.0f;
+	KeyFrame[86].giroModeloY = 90.0f;
+	KeyFrame[86].giroModeloZ = 0.0f;
+
+	KeyFrame[87].movModelo_x = 0.0f;
+	KeyFrame[87].movModelo_y = 0.25f;
+	KeyFrame[87].movModelo_z = 0.0f;
+	KeyFrame[87].giroModeloX = 0.0f;
+	KeyFrame[87].giroModeloY = 90.0f;
+	KeyFrame[87].giroModeloZ = 0.0f;
+
 
 	//Variable contadora para el cambio dia y noche
 	float tiempo_Dia = 0.0f;
@@ -1121,17 +1434,17 @@ int main()
 		meshList[2]->RenderMesh();
 
 		model = glm::mat4(1.0);
-		posblackhawk = glm::vec3(posXavion+movAvion_x,posYavion+movAvion_y, -(posZavion+movAvion_z));
+		posblackhawk = glm::vec3(posXModelo + movModelo_x, posYModelo + movModelo_y, posZModelo + movModelo_z);
 		model = glm::translate(model, posblackhawk);
 		model = glm::scale(model, glm::vec3(0.05f, 0.05f, 0.05f));//0.05f
-		model = glm::rotate(model, 90.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
-		model = glm::rotate(model, giroAvion * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
-		
+		model = glm::rotate(model, (-90 + giroModeloX) * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
+		model = glm::rotate(model, (90 + giroModeloY) * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::rotate(model, (90 + giroModeloZ) * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
-		nave_M.RenderModel();
-		spotLights[3].SetPos(posblackhawk);
-		
+		pickle_M.RenderModel();
+		/*spotLights[3].SetPos(posblackhawk);*/
+
 
 
 
@@ -5819,7 +6132,7 @@ int main()
 		//Derecha
 
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(4.0f + bancasX_1, 0.0f, -5.0f +(-6.4f + 6 * (3.2f))));
+		model = glm::translate(model, glm::vec3(4.0f + bancasX_1, 0.0f, -5.0f + (-6.4f + 6 * (3.2f))));
 		model = glm::rotate(model, -90.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -6068,7 +6381,7 @@ int main()
 		Luminaria_M.RenderModel();
 
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(4.0f + botesX_1, 0.0f, 0.5f+(-6.4f - 47.0 * (3.2f))));
+		model = glm::translate(model, glm::vec3(4.0f + botesX_1, 0.0f, 0.5f + (-6.4f - 47.0 * (3.2f))));
 		//model = glm::rotate(model, 90.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::rotate(model, 90.0f * toRadians, glm::vec3(-1.0f, 0.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
@@ -6140,7 +6453,7 @@ int main()
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		shortTree_M.RenderModel();
-		
+
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(-25.0f, 0.0f, -170.0f));
 		//model = glm::rotate(model, 90.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
@@ -6617,7 +6930,7 @@ int main()
 
 		//Jardín D ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(97.5f -46.0f, 0.0f, -128.0f));
+		model = glm::translate(model, glm::vec3(97.5f - 46.0f, 0.0f, -128.0f));
 		//model = glm::rotate(model, 90.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -6625,7 +6938,7 @@ int main()
 		Tree_M.RenderModel();
 
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(97.5f -35.0f, 0.0f, -127.0f));
+		model = glm::translate(model, glm::vec3(97.5f - 35.0f, 0.0f, -127.0f));
 		//model = glm::rotate(model, 90.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -6633,7 +6946,7 @@ int main()
 		Tree_M.RenderModel();
 
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(97.5f -26.0f, 0.0f, -126.0f));
+		model = glm::translate(model, glm::vec3(97.5f - 26.0f, 0.0f, -126.0f));
 		//model = glm::rotate(model, 90.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -6641,7 +6954,7 @@ int main()
 		Tree_M.RenderModel();
 
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(97.5f -15.0f, 0.0f, -127.0f));
+		model = glm::translate(model, glm::vec3(97.5f - 15.0f, 0.0f, -127.0f));
 		//model = glm::rotate(model, 90.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -6649,7 +6962,7 @@ int main()
 		Tree_M.RenderModel();
 
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(97.5f -6.0f, 0.0f, -126.0f));
+		model = glm::translate(model, glm::vec3(97.5f - 6.0f, 0.0f, -126.0f));
 		//model = glm::rotate(model, 90.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -6657,7 +6970,7 @@ int main()
 		Tree_M.RenderModel();
 
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(97.5f -45.0f, 0.0f, -115.0f));
+		model = glm::translate(model, glm::vec3(97.5f - 45.0f, 0.0f, -115.0f));
 		//model = glm::rotate(model, 90.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -6665,7 +6978,7 @@ int main()
 		Tree_M.RenderModel();
 
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(97.5f -36.0f, 0.0f, -116.0f));
+		model = glm::translate(model, glm::vec3(97.5f - 36.0f, 0.0f, -116.0f));
 		//model = glm::rotate(model, 90.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -6673,7 +6986,7 @@ int main()
 		Tree_M.RenderModel();
 
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(97.5f -25.0f, 0.0f, -114.0f));
+		model = glm::translate(model, glm::vec3(97.5f - 25.0f, 0.0f, -114.0f));
 		//model = glm::rotate(model, 90.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -6681,7 +6994,7 @@ int main()
 		Tree_M.RenderModel();
 
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(97.5f -17.0f, 0.0f, -115.0f));
+		model = glm::translate(model, glm::vec3(97.5f - 17.0f, 0.0f, -115.0f));
 		//model = glm::rotate(model, 90.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -6689,7 +7002,7 @@ int main()
 		Tree_M.RenderModel();
 
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(97.5f -7.0f, 0.0f, -116.0f));
+		model = glm::translate(model, glm::vec3(97.5f - 7.0f, 0.0f, -116.0f));
 		//model = glm::rotate(model, 90.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -6697,7 +7010,7 @@ int main()
 		Tree_M.RenderModel();
 
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(97.5f -46.0f, 0.0f, -100.0f));
+		model = glm::translate(model, glm::vec3(97.5f - 46.0f, 0.0f, -100.0f));
 		//model = glm::rotate(model, 90.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -6705,7 +7018,7 @@ int main()
 		Tree_M.RenderModel();
 
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(97.5f -35.0f, 0.0f, -104.0f));
+		model = glm::translate(model, glm::vec3(97.5f - 35.0f, 0.0f, -104.0f));
 		//model = glm::rotate(model, 90.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -6713,7 +7026,7 @@ int main()
 		Tree_M.RenderModel();
 
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(97.5f -26.0f, 0.0f, -101.0f));
+		model = glm::translate(model, glm::vec3(97.5f - 26.0f, 0.0f, -101.0f));
 		//model = glm::rotate(model, 90.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -6721,7 +7034,7 @@ int main()
 		Tree_M.RenderModel();
 
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(97.5f -15.0f, 0.0f, -102.0f));
+		model = glm::translate(model, glm::vec3(97.5f - 15.0f, 0.0f, -102.0f));
 		//model = glm::rotate(model, 90.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -6729,7 +7042,7 @@ int main()
 		Tree_M.RenderModel();
 
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(97.5f -6.0f, 0.0f, -101.0f));
+		model = glm::translate(model, glm::vec3(97.5f - 6.0f, 0.0f, -101.0f));
 		//model = glm::rotate(model, 90.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -6737,7 +7050,7 @@ int main()
 		Tree_M.RenderModel();
 
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(97.5f -40.0f, 0.0f, -124.0f));
+		model = glm::translate(model, glm::vec3(97.5f - 40.0f, 0.0f, -124.0f));
 		//model = glm::rotate(model, 90.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -6745,7 +7058,7 @@ int main()
 		shortTree_M.RenderModel();
 
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(97.5f -30.0f, 0.0f, -122.0f));
+		model = glm::translate(model, glm::vec3(97.5f - 30.0f, 0.0f, -122.0f));
 		//model = glm::rotate(model, 90.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -6753,7 +7066,7 @@ int main()
 		shortTree_M.RenderModel();
 
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(97.5f -21.0f, 0.0f, -123.0f));
+		model = glm::translate(model, glm::vec3(97.5f - 21.0f, 0.0f, -123.0f));
 		//model = glm::rotate(model, 90.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -6761,7 +7074,7 @@ int main()
 		shortTree_M.RenderModel();
 
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(97.5f -11.0f, 0.0f, -122.0f));
+		model = glm::translate(model, glm::vec3(97.5f - 11.0f, 0.0f, -122.0f));
 		//model = glm::rotate(model, 90.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -6769,7 +7082,7 @@ int main()
 		shortTree_M.RenderModel();
 
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(97.5f -39.0f, 0.0f, -109.0f));
+		model = glm::translate(model, glm::vec3(97.5f - 39.0f, 0.0f, -109.0f));
 		//model = glm::rotate(model, 90.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -6777,7 +7090,7 @@ int main()
 		shortTree_M.RenderModel();
 
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(97.5f -28.0f, 0.0f, -111.0f));
+		model = glm::translate(model, glm::vec3(97.5f - 28.0f, 0.0f, -111.0f));
 		//model = glm::rotate(model, 90.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -6785,7 +7098,7 @@ int main()
 		shortTree_M.RenderModel();
 
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(97.5f -19.0f, 0.0f, -110.0f));
+		model = glm::translate(model, glm::vec3(97.5f - 19.0f, 0.0f, -110.0f));
 		model = glm::rotate(model, 90.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -6793,7 +7106,7 @@ int main()
 		shortTree_M.RenderModel();
 
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(97.5f -8.0f, 0.0f, -112.0f));
+		model = glm::translate(model, glm::vec3(97.5f - 8.0f, 0.0f, -112.0f));
 		model = glm::rotate(model, 90.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -6801,15 +7114,7 @@ int main()
 		shortTree_M.RenderModel();
 
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(97.5f -40.0f, 0.0f, -130.0f));
-		model = glm::rotate(model, 90.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
-		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
-		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
-		Bush_M.RenderModel();
-
-		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(97.5f -35.0f, 0.0f, -101.0f));
+		model = glm::translate(model, glm::vec3(97.5f - 40.0f, 0.0f, -130.0f));
 		model = glm::rotate(model, 90.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -6817,7 +7122,7 @@ int main()
 		Bush_M.RenderModel();
 
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(97.5f -10.0f, 0.0f, -115.0f));
+		model = glm::translate(model, glm::vec3(97.5f - 35.0f, 0.0f, -101.0f));
 		model = glm::rotate(model, 90.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -6825,7 +7130,15 @@ int main()
 		Bush_M.RenderModel();
 
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(97.5f -5.0f, 0.0f, -106.0f));
+		model = glm::translate(model, glm::vec3(97.5f - 10.0f, 0.0f, -115.0f));
+		model = glm::rotate(model, 90.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		Bush_M.RenderModel();
+
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(97.5f - 5.0f, 0.0f, -106.0f));
 		model = glm::rotate(model, 90.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -6834,7 +7147,7 @@ int main()
 
 		//Jardín E ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(- 46.0f, 0.0f, 45.0f - 128.0f));
+		model = glm::translate(model, glm::vec3(-46.0f, 0.0f, 45.0f - 128.0f));
 		//model = glm::rotate(model, 90.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -6842,7 +7155,7 @@ int main()
 		Tree_M.RenderModel();
 
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(- 35.0f, 0.0f, 45.0f - 127.0f));
+		model = glm::translate(model, glm::vec3(-35.0f, 0.0f, 45.0f - 127.0f));
 		//model = glm::rotate(model, 90.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -6850,7 +7163,7 @@ int main()
 		Tree_M.RenderModel();
 
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(- 26.0f, 0.0f, 45.0f - 126.0f));
+		model = glm::translate(model, glm::vec3(-26.0f, 0.0f, 45.0f - 126.0f));
 		//model = glm::rotate(model, 90.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -6858,7 +7171,7 @@ int main()
 		Tree_M.RenderModel();
 
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(- 15.0f, 0.0f, 45.0f - 127.0f));
+		model = glm::translate(model, glm::vec3(-15.0f, 0.0f, 45.0f - 127.0f));
 		//model = glm::rotate(model, 90.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -6866,7 +7179,7 @@ int main()
 		Tree_M.RenderModel();
 
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(- 6.0f, 0.0f, 45.0f - 126.0f));
+		model = glm::translate(model, glm::vec3(-6.0f, 0.0f, 45.0f - 126.0f));
 		//model = glm::rotate(model, 90.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -6874,7 +7187,7 @@ int main()
 		Tree_M.RenderModel();
 
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(- 45.0f, 0.0f, 45.0f - 115.0f));
+		model = glm::translate(model, glm::vec3(-45.0f, 0.0f, 45.0f - 115.0f));
 		//model = glm::rotate(model, 90.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -6882,7 +7195,7 @@ int main()
 		Tree_M.RenderModel();
 
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(- 36.0f, 0.0f, 45.0f - 116.0f));
+		model = glm::translate(model, glm::vec3(-36.0f, 0.0f, 45.0f - 116.0f));
 		//model = glm::rotate(model, 90.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -6890,7 +7203,7 @@ int main()
 		Tree_M.RenderModel();
 
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(- 25.0f, 0.0f, 45.0f - 114.0f));
+		model = glm::translate(model, glm::vec3(-25.0f, 0.0f, 45.0f - 114.0f));
 		//model = glm::rotate(model, 90.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -6898,7 +7211,7 @@ int main()
 		Tree_M.RenderModel();
 
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(- 17.0f, 0.0f, 45.0f - 115.0f));
+		model = glm::translate(model, glm::vec3(-17.0f, 0.0f, 45.0f - 115.0f));
 		//model = glm::rotate(model, 90.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -6906,7 +7219,7 @@ int main()
 		Tree_M.RenderModel();
 
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(- 7.0f, 0.0f, 45.0f - 116.0f));
+		model = glm::translate(model, glm::vec3(-7.0f, 0.0f, 45.0f - 116.0f));
 		//model = glm::rotate(model, 90.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -6914,7 +7227,7 @@ int main()
 		Tree_M.RenderModel();
 
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(- 46.0f, 0.0f, 45.0f - 100.0f));
+		model = glm::translate(model, glm::vec3(-46.0f, 0.0f, 45.0f - 100.0f));
 		//model = glm::rotate(model, 90.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -6922,7 +7235,7 @@ int main()
 		Tree_M.RenderModel();
 
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(- 35.0f, 0.0f, 45.0f - 104.0f));
+		model = glm::translate(model, glm::vec3(-35.0f, 0.0f, 45.0f - 104.0f));
 		//model = glm::rotate(model, 90.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -6930,7 +7243,7 @@ int main()
 		Tree_M.RenderModel();
 
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(- 26.0f, 0.0f, 45.0f - 101.0f));
+		model = glm::translate(model, glm::vec3(-26.0f, 0.0f, 45.0f - 101.0f));
 		//model = glm::rotate(model, 90.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -6938,7 +7251,7 @@ int main()
 		Tree_M.RenderModel();
 
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(- 15.0f, 0.0f, 45.0f - 102.0f));
+		model = glm::translate(model, glm::vec3(-15.0f, 0.0f, 45.0f - 102.0f));
 		//model = glm::rotate(model, 90.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -6946,7 +7259,7 @@ int main()
 		Tree_M.RenderModel();
 
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(- 6.0f, 0.0f, 45.0f - 101.0f));
+		model = glm::translate(model, glm::vec3(-6.0f, 0.0f, 45.0f - 101.0f));
 		//model = glm::rotate(model, 90.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -6954,7 +7267,7 @@ int main()
 		Tree_M.RenderModel();
 
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(- 40.0f, 0.0f, 45.0f - 124.0f));
+		model = glm::translate(model, glm::vec3(-40.0f, 0.0f, 45.0f - 124.0f));
 		//model = glm::rotate(model, 90.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -6962,7 +7275,7 @@ int main()
 		shortTree_M.RenderModel();
 
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(- 30.0f, 0.0f, 45.0f - 122.0f));
+		model = glm::translate(model, glm::vec3(-30.0f, 0.0f, 45.0f - 122.0f));
 		//model = glm::rotate(model, 90.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -6970,7 +7283,7 @@ int main()
 		shortTree_M.RenderModel();
 
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(- 21.0f, 0.0f, 45.0f - 123.0f));
+		model = glm::translate(model, glm::vec3(-21.0f, 0.0f, 45.0f - 123.0f));
 		//model = glm::rotate(model, 90.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -6978,7 +7291,7 @@ int main()
 		shortTree_M.RenderModel();
 
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(- 11.0f, 0.0f, 45.0f - 122.0f));
+		model = glm::translate(model, glm::vec3(-11.0f, 0.0f, 45.0f - 122.0f));
 		//model = glm::rotate(model, 90.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -6986,7 +7299,7 @@ int main()
 		shortTree_M.RenderModel();
 
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(- 39.0f, 0.0f, 45.0f - 109.0f));
+		model = glm::translate(model, glm::vec3(-39.0f, 0.0f, 45.0f - 109.0f));
 		//model = glm::rotate(model, 90.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -6994,7 +7307,7 @@ int main()
 		shortTree_M.RenderModel();
 
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(- 28.0f, 0.0f, 45.0f - 111.0f));
+		model = glm::translate(model, glm::vec3(-28.0f, 0.0f, 45.0f - 111.0f));
 		//model = glm::rotate(model, 90.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -7002,7 +7315,7 @@ int main()
 		shortTree_M.RenderModel();
 
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(- 19.0f, 0.0f, 45.0f - 110.0f));
+		model = glm::translate(model, glm::vec3(-19.0f, 0.0f, 45.0f - 110.0f));
 		model = glm::rotate(model, 90.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -7010,7 +7323,7 @@ int main()
 		shortTree_M.RenderModel();
 
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(- 8.0f, 0.0f, 45.0f - 112.0f));
+		model = glm::translate(model, glm::vec3(-8.0f, 0.0f, 45.0f - 112.0f));
 		model = glm::rotate(model, 90.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -7018,15 +7331,7 @@ int main()
 		shortTree_M.RenderModel();
 
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(- 40.0f, 0.0f, 45.0f - 130.0f));
-		model = glm::rotate(model, 90.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
-		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
-		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
-		Bush_M.RenderModel();
-
-		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(- 35.0f, 0.0f, 45.0f - 101.0f));
+		model = glm::translate(model, glm::vec3(-40.0f, 0.0f, 45.0f - 130.0f));
 		model = glm::rotate(model, 90.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -7034,7 +7339,7 @@ int main()
 		Bush_M.RenderModel();
 
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(- 10.0f, 0.0f, 45.0f - 115.0f));
+		model = glm::translate(model, glm::vec3(-35.0f, 0.0f, 45.0f - 101.0f));
 		model = glm::rotate(model, 90.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -7042,7 +7347,15 @@ int main()
 		Bush_M.RenderModel();
 
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(- 5.0f, 0.0f, 45.0f - 106.0f));
+		model = glm::translate(model, glm::vec3(-10.0f, 0.0f, 45.0f - 115.0f));
+		model = glm::rotate(model, 90.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		Bush_M.RenderModel();
+
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(-5.0f, 0.0f, 45.0f - 106.0f));
 		model = glm::rotate(model, 90.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -7700,7 +8013,7 @@ int main()
 		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		Bush_M.RenderModel();
 
-		
+
 		//Jardín I ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(-46.0f, 0.0f, 134.0f - 128.0f));
@@ -7823,7 +8136,7 @@ int main()
 		Tree_M.RenderModel();
 
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(37.0f -29.0f, 0.0f, 134.0f - 101.0f));
+		model = glm::translate(model, glm::vec3(37.0f - 29.0f, 0.0f, 134.0f - 101.0f));
 		//model = glm::rotate(model, 90.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -8206,212 +8519,96 @@ int main()
 		//Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		//Luminaria_M.RenderModel();
 
-		
 
-		//aspas empiezan a girar
+
+		//tramo inicial
 		if (t1)
 		{
-			rotHelices += incHelices * deltaTime * 500.0f;
-			incHelices *= 1.005;
-			//incHelices *= 2.001;
-			if (incHelices >= 1.5f)
+			posCarroZ -= movOffset * deltaTime;
+			if (posCarroZ <= -180.0f)
 			{
 				t1 = false;
 				t2 = true;
 			}
 		}
-		//elevaci�n
+		//primer giro a la derecha
 		if (t2)
 		{
-			rotHelices += incHelices * deltaTime * 500.0f;
-			posHeliY += movOffset * deltaTime * 0.3f;
-			//rotHeliZ -= movOffset * deltaTime * 4.0f;
-			//posHeliY += movOffset * deltaTime * .8f * cos(rotHeliZ * toRadians);
-			//posHeliX += movOffset * deltaTime * .8f * sin(rotHeliZ * toRadians);
-			if (posHeliY >= 10.0f)//10.0f
+			rotCarroY += movOffset * deltaTime * 4.0f;
+			posCarroZ -= movOffset * deltaTime * .8f * cos(rotCarroY * toRadians);
+			posCarroX += movOffset * deltaTime * .8f * sin(rotCarroY * toRadians);
+			if (rotCarroY >= 90.0f)
 			{
 				t2 = false;
-				t3 = true;
-			}
-		}
-		//avanza en Z
-		if (t3)
-		{
-			rotHelices += incHelices * deltaTime * 500.0f;
-			posHeliY += 0.0003f * sin(uniTime);
-			posHeliZ -= movOffset * deltaTime;
-			if (posHeliZ <= -1.0f) //10.0f
-			{
-				t3 = false;
 				t4 = true;
 			}
 		}
 
-		//primer giro
+		//continua
 		if (t4)
 		{
-			rotHelices += incHelices * deltaTime * 500.0f;
-			posHeliY += 0.0003f * sin(uniTime);
-			rotHeliY += movOffset * deltaTime * 4.0f;
-			posHeliZ -= movOffset * deltaTime * 1.0f * cos(rotHeliY * toRadians);
-			posHeliX -= movOffset * deltaTime * 1.0f * sin(rotHeliY * toRadians);
-			//rotHeliZ -= movOffset * deltaTime * 4.0f;
-			//posHeliY += movOffset * deltaTime * .8f * cos(rotHeliZ * toRadians);
-			//posHeliX += movOffset * deltaTime * .8f * sin(rotHeliZ * toRadians);
-			if (rotHeliY >= 90.0f)
+			posCarroX += movOffset * deltaTime;
+			if (posCarroX >= 100.0f)
 			{
 				t4 = false;
-				t5 = true;
-			}
-		}
-
-		//descenso
-		if (t5)
-		{
-			rotHelices += incHelices * deltaTime * 500.0f;
-			posHeliY -= movOffset * deltaTime * 0.3f;
-			//rotHeliZ -= movOffset * deltaTime * 4.0f;
-			//posHeliY += movOffset * deltaTime * .8f * cos(rotHeliZ * toRadians);
-			//posHeliX += movOffset * deltaTime * .8f * sin(rotHeliZ * toRadians);
-			retardo = lastTime;
-			if (posHeliY <= 0.2f)//10.0f
-			{
-				t5 = false;
-				ta = true;
-			}
-		}
-
-		if (ta)
-		{
-			rotHelices += incHelices * deltaTime * 500.0f;
-			if ((lastTime - retardo) >= 5.0f)
-			{
-				ta = false;
-				t6 = true;
-			}
-		}
-
-		//elevaci�n
-		if (t6)
-		{
-			rotHelices += incHelices * deltaTime * 500.0f;
-			posHeliY += movOffset * deltaTime * 0.3f;
-			//rotHeliZ -= movOffset * deltaTime * 4.0f;
-			//posHeliY += movOffset * deltaTime * .8f * cos(rotHeliZ * toRadians);
-			//posHeliX += movOffset * deltaTime * .8f * sin(rotHeliZ * toRadians);
-			if (posHeliY >= 10.0f)//10.0f
-			{
-				t6 = false;
-				t7 = true;
-			}
-		}
-
-		//segundo giro
-		if (t7)
-		{
-			rotHelices += incHelices * deltaTime * 500.0f;
-			posHeliY += 0.0003f * sin(uniTime);
-			rotHeliY += movOffset * deltaTime * 4.0f;
-			posHeliZ -= movOffset * deltaTime * 1.0f * cos(rotHeliY * toRadians);
-			posHeliX -= movOffset * deltaTime * 1.0f * sin(rotHeliY * toRadians);
-			//rotHeliZ -= movOffset * deltaTime * 4.0f;
-			//posHeliY += movOffset * deltaTime * .8f * cos(rotHeliZ * toRadians);
-			//posHeliX += movOffset * deltaTime * .8f * sin(rotHeliZ * toRadians);
-			if (rotHeliY >= 180.0f)
-			{
-				t7 = false;
 				t8 = true;
 			}
 		}
-
-		//descenso
+		//segundo giro a la derecha
 		if (t8)
 		{
-			rotHelices += incHelices * deltaTime * 500.0f;
-			posHeliY -= movOffset * deltaTime * 0.3f;
-			//rotHeliZ -= movOffset * deltaTime * 4.0f;
-			//posHeliY += movOffset * deltaTime * .8f * cos(rotHeliZ * toRadians);
-			//posHeliX += movOffset * deltaTime * .8f * sin(rotHeliZ * toRadians);
-			retardo = lastTime;
-			if (posHeliY <= 0.2f)//10.0f
+			rotCarroY += movOffset * deltaTime * 4;
+			posCarroZ -= movOffset * deltaTime * .8 * cos(rotCarroY * toRadians);
+			posCarroX += movOffset * deltaTime * .8 * sin(rotCarroY * toRadians);
+			if (rotCarroY >= 180.0)
 			{
 				t8 = false;
-				tb = true;
-			}
-		}
-
-		if (tb)
-		{
-			rotHelices += incHelices * deltaTime * 500.0f;
-			if ((lastTime - retardo) >= 5.0f)
-			{
-				tb = false;
 				t9 = true;
 			}
 		}
-
-		//elevaci�n
+		//continua via alta 2
 		if (t9)
 		{
-			rotHelices += incHelices * deltaTime * 500.0f;
-			posHeliY += movOffset * deltaTime * 0.3f;
-			//rotHeliZ -= movOffset * deltaTime * 4.0f;
-			//posHeliY += movOffset * deltaTime * .8f * cos(rotHeliZ * toRadians);
-			//posHeliX += movOffset * deltaTime * .8f * sin(rotHeliZ * toRadians);
-			if (posHeliY >= 10.0f)//10.0f
+			posCarroZ += movOffset * deltaTime;
+			if (posCarroZ >= 45.0f)
 			{
 				t9 = false;
 				t10 = true;
 			}
 		}
-
-		//tercer giro
+		//tercer giro a la derecha
 		if (t10)
 		{
-			rotHelices += incHelices * deltaTime * 500.0f;
-			posHeliY += 0.0003f * sin(uniTime);
-			rotHeliY += movOffset * deltaTime * 15.0f;
-			//rotHeliZ -= movOffset * deltaTime * 4.0f;
-			//posHeliY += movOffset * deltaTime * .8f * cos(rotHeliZ * toRadians);
-			//posHeliX += movOffset * deltaTime * .8f * sin(rotHeliZ * toRadians);
-			if (rotHeliY >= 270.0f)
+			rotCarroY += movOffset * deltaTime * 4;
+			posCarroZ -= movOffset * deltaTime * .8 * cos(rotCarroY * toRadians);
+			posCarroX += movOffset * deltaTime * .8 * sin(rotCarroY * toRadians);
+			if (rotCarroY >= 270.0)
 			{
 				t10 = false;
 				t11 = true;
 			}
 		}
-
-		//avanza en X
+		
+		//continua via baja
 		if (t11)
 		{
-			rotHelices += incHelices * deltaTime * 500.0f;
-			posHeliY += 0.0003f * sin(uniTime);
-			//rotHeliY += movOffset * deltaTime * 4.0f;
-			posHeliZ -= movOffset * deltaTime * 1.0f * cos(rotHeliY * toRadians);
-			posHeliX -= movOffset * deltaTime * 1.0f * sin(rotHeliY * toRadians);
-			//rotHeliZ -= movOffset * deltaTime * 4.0f;
-			//posHeliY += movOffset * deltaTime * .8f * cos(rotHeliZ * toRadians);
-			//posHeliX += movOffset * deltaTime * .8f * sin(rotHeliZ * toRadians);
-			if (posHeliX >= 40.0f)
+			posCarroX -= movOffset * deltaTime;
+			if (posCarroX <= -60.0f)
 			{
 				t11 = false;
-				t12 = true;
+				t16 = true;
 			}
 		}
-
-		//cuarto giro
-		if (t12)
+		//cuarto giro a la derecha
+		if (t16)
 		{
-			rotHelices += incHelices * deltaTime * 500.0f;
-			posHeliY += 0.0003f * sin(uniTime);
-			rotHeliY += movOffset * deltaTime * 15.0f;
-			//rotHeliZ -= movOffset * deltaTime * 4.0f;
-			//posHeliY += movOffset * deltaTime * .8f * cos(rotHeliZ * toRadians);
-			//posHeliX += movOffset * deltaTime * .8f * sin(rotHeliZ * toRadians);
-			if (rotHeliY >= 360.0f)
+			rotCarroY += movOffset * deltaTime * 4.0f;
+			posCarroZ -= movOffset * deltaTime * .8f * cos(rotCarroY * toRadians);
+			posCarroX += movOffset * deltaTime * .8f * sin(rotCarroY * toRadians);
+			if (rotCarroY >= 360.0f)
 			{
-				rotHeliY = 0.0f;
-				t12 = false;
+				rotCarroY = 0.0f;
+				t16 = false;
 				t1 = true;
 			}
 		}
@@ -8421,27 +8618,14 @@ int main()
 
 
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(posHeliX, posHeliY, posHeliZ));
-		model = glm::rotate(model, rotHeliX * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
-		model = glm::rotate(model, rotHeliY * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
-		model = glm::rotate(model, rotHeliZ * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));
-		aux = model;
+		model = glm::rotate(model, 0.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::translate(model, glm::vec3(posCarroX, posCarroY, posCarroZ));
+		model = glm::rotate(model, (-90.0f + rotCarroY) * toRadians, glm::vec3(0.0f, -1.0f, 0.0f));
+		//model = glm::rotate(model, rotCarroX * toRadians, glm::vec3(-1.0f, 0.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
-		Blackhawk_M.RenderModel();
-
-		model = glm::rotate(model, rotHelices * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
-		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		Helices_M.RenderModel();
-
-		
-		model = aux;
-		model = glm::translate(model, glm::vec3(0.01f, 0.23f, 1.05f));
-		model = glm::rotate(model, rotHelices * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
-		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f)); 
-		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		rotorTras_M.RenderModel();
+		nave_M.RenderModel();
 
 
 		// Fuentes
@@ -8449,7 +8633,7 @@ int main()
 		model = glm::translate(model, glm::vec3(7 * 3.2f, 0.0f, -7 * 1.6f));
 		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		
+
 		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		fuente_M.RenderModel();
 
@@ -8494,7 +8678,7 @@ int main()
 
 		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		barandalRecto_M.RenderModel();
-		
+
 		model = aux;
 		model = glm::translate(model, glm::vec3(-11.0f, 15.0f, 26.5f));
 		//model = glm::scale(model, glm::vec3(0.f, 0.075f, 0.075f));
@@ -8505,7 +8689,7 @@ int main()
 		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		columna_M.RenderModel();
 
-		
+
 
 		//
 		model = aux;
@@ -8543,7 +8727,7 @@ int main()
 
 		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		columna_M.RenderModel();
-		
+
 		model = glm::rotate(model, 45.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		color = glm::vec3(0.0f, 0.5f, 1.0f);
 		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
@@ -8551,7 +8735,7 @@ int main()
 
 		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		barandalRecto_M.RenderModel();
-		
+
 
 		model = aux;
 		model = glm::translate(model, glm::vec3(26.5f, 15.0f, 11.0f));
@@ -8650,7 +8834,7 @@ int main()
 		model = glm::rotate(model, 315.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		triangulo_M.RenderModel();
-		
+
 
 		// Escalones Norte
 		// 1ª Capa
@@ -8935,9 +9119,8 @@ void inputKeyframes(bool* keys)
 		if (guardoFrame < 1)
 		{
 			saveFrame();
-			printf("movAvion_x es: %f\n", movAvion_x);
-			printf("movAvion_y es: %f\n", movAvion_y);
-			printf("movAvion_z es: %f\n", movAvion_z);
+			printf("movModelo_x es: %f\n", movModelo_x);
+			//printf("movModelo_y es: %f\n", movModelo_y);
 			printf("presiona P para habilitar guardar otro frame'\n");
 			guardoFrame++;
 			reinicioFrame = 0;
@@ -8956,50 +9139,16 @@ void inputKeyframes(bool* keys)
 	{
 		if (ciclo < 1)
 		{
-			if (keys[GLFW_KEY_RIGHT_SHIFT])
-				movAvion_x -= 1.0f;
-			else
-				movAvion_x += 1.0f;
-			printf("movAvion_x es: %f\n", movAvion_x);
+			//printf("movModelo_x es: %f\n", movModelo_x);
+			movModelo_x += 1.0f;
+			printf("movModelo_x es: %f\n", movModelo_x);
 			ciclo++;
 			ciclo2 = 0;
-			printf("reinicia con 9\n");
+			printf("reinicia con 2\n");
 		}
 
 	}
-	
 	if (keys[GLFW_KEY_2])
-	{
-		if (ciclo < 1)
-		{
-			if (keys[GLFW_KEY_RIGHT_SHIFT])
-				movAvion_y -= 1.0f;
-			else
-				movAvion_y += 1.0f;
-			printf("movAvion_y es: %f\n", movAvion_y);
-			ciclo++;
-			ciclo2 = 0;
-			printf("reinicia con 9\n");
-		}
-
-	}
-
-	if (keys[GLFW_KEY_3])
-	{
-		if (ciclo < 1)
-		{
-			if (keys[GLFW_KEY_RIGHT_SHIFT])
-				movAvion_z -= 1.0f;
-			else
-				movAvion_z += 1.0f;
-			printf("movAvion_z es: %f\n", movAvion_z);
-			ciclo++;
-			ciclo2 = 0;
-			printf("reinicia con 9\n");
-		}
-
-	}
-	if (keys[GLFW_KEY_9])
 	{
 		if (ciclo2 < 1)
 		{
