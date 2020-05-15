@@ -12,8 +12,8 @@ newmtl 01___Default
 	Kd 0.5882 0.5882 0.5882
 	Ks 0.0000 0.0000 0.0000
 	Ke 0.0000 0.0000 0.0000
-	map_Ka C:\Users\Casa3\Downloads\Practica 12\Practica1\Practica1\Textures\Azul.tga
-	map_Kd C:\Users\Casa3\Downloads\Practica 12\Practica1\Practica1\Textures\Azul.tga
+	map_Ka maps\Azul.tga
+	map_Kd maps\Azul.tga
 
 newmtl wire_113135006
 	Ns 32
@@ -36,5 +36,5 @@ newmtl 02___Default
 	Kd 0.5882 0.5882 0.5882
 	Ks 0.0000 0.0000 0.0000
 	Ke 0.0000 0.0000 0.0000
-	map_Ka C:\Users\Casa3\Downloads\Practica 12\Practica1\Practica1\Textures\Blanco_Puerta.tga
-	map_Kd C:\Users\Casa3\Downloads\Practica 12\Practica1\Practica1\Textures\Blanco_Puerta.tga
+	map_Ka maps\Blanco_Puerta.tga
+	map_Kd maps\Blanco_Puerta.tga

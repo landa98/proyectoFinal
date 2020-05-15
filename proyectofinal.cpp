@@ -41,6 +41,10 @@ Animación por keyframes
 #include <Windows.h>
 #include <mmsystem.h>
 
+// Generación números random
+#include <stdlib.h>
+#include <time.h>
+
 
 const float toRadians = 3.14159265f / 180.0f;
 float movCoche;
@@ -65,8 +69,23 @@ float rotCarroY;
 float rotCarroZ;
 float tiempoOffset;
 float retardo;
+// Variables Grandpa Rick
+float rotacionAvatar1 = 0.0f;
+float headingAvatar1 = 0.0f;
+float movXAvatar1 = 0.0f;
+float movYAvatar1 = 0.0f;
+float movZAvatar1 = 0.0f;
+bool cambia_sentido1 = false;
+// Variables Ryougi Shiki
+float rotacionAvatar2 = 0.0f;
+float headingAvatar2 = 0.0f;
+float movXAvatar2 = 0.0f;
+float movYAvatar2 = 0.0f;
+float movZAvatar2 = 0.0f;
+bool cambia_sentido2 = false;
+
 bool t1 = true;
-bool t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, t12, t13, t14, t15, t16, t17, t18, t19, t20, ta, tb = false;
+bool t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, t12, t13, t14, t15, t16, t17, t18, t19, t20, ta, tb, espectaculo = false, siguiente=true;
 Window mainWindow;
 std::vector<Mesh*> meshList;
 std::vector<Shader> shaderList;
@@ -81,6 +100,7 @@ Texture Tagave;
 Texture Tverde;
 Texture Tgris;
 Texture tPisoAlameda;
+Texture tPisoJardin;
 //materiales
 Material Material_brillante;
 Material Material_opaco;
@@ -111,6 +131,8 @@ Model esquinaRejasInv_M;
 Model nave_M;
 Model pickle_M;
 Model fuente_M;
+Model cabina_M;
+
 //Primitivas kiosco
 Model base_M;
 Model columna_M;
@@ -118,6 +140,30 @@ Model barandalRecto_M;
 Model triangulo_M;
 Model octagono_M;
 Model escalon_M;
+//Primitivas avatar Grandpa Rick
+Model cabezaRick_M;
+Model torax_M;
+Model cadera_M;
+Model entrepierna_M;
+Model piernaIzq_M;
+Model piernaDer_M;
+Model brazoIzq_M;
+Model brazoDer_M;
+Model manoIzq_M;
+Model manoDer_M;
+
+//Primitivas avatar Ryougi Shiki
+Model RScabeza_M;
+Model RStorax_M;
+Model RScadera_M;
+Model RSentrepierna_M;
+Model RSpiernaIzq_M;
+Model RSpiernaDer_M;
+Model RSbrazoIzq_M;
+Model RSbrazoDer_M;
+Model RSmanoIzq_M;
+Model RSmanoDer_M;
+
 
 Skybox skybox;
 Skybox skybox_Dia;
@@ -138,12 +184,6 @@ static const char* vShader = "shaders/shader_light.vert";
 
 // Fragment Shader
 static const char* fShader = "shaders/shader_light.frag";
-
-// Vertex Shader Uniform Color
-static const char* vShaderUC = "shaders/shader_lightUC.vert";
-
-// Fragment Shader Uniform Color
-static const char* fShaderUC = "shaders/shader_lightUC.frag";
 
 //cálculo del promedio de las normales para sombreado de Phong
 void calcAverageNormals(unsigned int * indices, unsigned int indiceCount, GLfloat * vertices, unsigned int verticeCount,
@@ -206,6 +246,42 @@ void CreateObjects()
 		10.0f, 0.0f, 10.0f,		30.0f,	30.0f,	0.0f, -1.0f, 0.0f
 	};
 
+	unsigned int jardinAindices[] = {
+		0, 2, 1,
+		1, 2, 3
+	};
+
+	GLfloat jardinAvertices[] = {
+		-49.0f, 0.0f, -176.0f,	0.0f,	0.0f,	0.0f, -1.0f, 0.0f,
+		17.0f, 0.0f, -176.0f,	3.4f,	0.0f,	0.0f, -1.0f, 0.0f,
+		-49.0f, 0.0f, -160.0f,	0.0f,	0.8f,	0.0f, -1.0f, 0.0f,
+		17.0f, 0.0f, -160.0f,	3.4f,	0.8f,	0.0f, -1.0f, 0.0f
+	};
+
+	unsigned int jardinA2indices[] = {
+		0, 2, 1,
+		1, 2, 3
+	};
+
+	GLfloat jardinA2vertices[] = {
+		-49.0f, 0.0f, -160.0f,	0.0f,	0.0f,	0.0f, -1.0f, 0.0f,
+		0.0f, 0.0f, -160.0f,	2.45f,	0.0f,	0.0f, -1.0f, 0.0f,
+		-49.0f, 0.0f, -140.0f,	0.0f,	1.0f,	0.0f, -1.0f, 0.0f,
+		0.0f, 0.0f, -140.0f,	2.45f,	1.0f,	0.0f, -1.0f, 0.0f
+	};
+
+	unsigned int jardinCindices[] = {
+		0, 2, 1,
+		1, 2, 3
+	};
+
+	GLfloat jardinCvertices[] = {
+		-49.0f, 0.0f, -131.0f,	0.0f,	0.0f,	0.0f, -1.0f, 0.0f,
+		0.0f, 0.0f, -131.0f,	2.45f,	0.0f,	0.0f, -1.0f, 0.0f,
+		-49.0f, 0.0f, -95.0f,	0.0f,	1.85f,	0.0f, -1.0f, 0.0f,
+		0.0f, 0.0f, -95.0f,		2.45f,	1.85f,	0.0f, -1.0f, 0.0f
+	};
+
 	unsigned int vegetacionIndices[] = {
 		0, 1, 2,
 		0, 2, 3,
@@ -238,11 +314,23 @@ void CreateObjects()
 	obj3->CreateMesh(floorVertices, floorIndices, 32, 6);
 	meshList.push_back(obj3);
 
-	calcAverageNormals(vegetacionIndices, 12, vegetacionVertices, 64, 8, 5);
+	Mesh* obj4 = new Mesh();
+	obj4->CreateMesh(jardinAvertices, jardinAindices, 32, 6);
+	meshList.push_back(obj4);
+
+	Mesh* obj5 = new Mesh();
+	obj5->CreateMesh(jardinA2vertices, jardinA2indices, 32, 6);
+	meshList.push_back(obj5);
+
+	Mesh* obj6 = new Mesh();
+	obj6->CreateMesh(jardinCvertices, jardinCindices, 32, 6);
+	meshList.push_back(obj6);
+
+	/*calcAverageNormals(vegetacionIndices, 12, vegetacionVertices, 64, 8, 5);
 
 	Mesh *obj4 = new Mesh();
 	obj4->CreateMesh(vegetacionVertices, vegetacionIndices, 64, 12);
-	meshList.push_back(obj4);
+	meshList.push_back(obj4);*/
 
 }
 
@@ -324,11 +412,8 @@ void CrearCubo()
 void CreateShaders()
 {
 	Shader *shader1 = new Shader();
-	/*Shader *shader2 = new Shader();*/
 	shader1->CreateFromFiles(vShader, fShader);
 	shaderList.push_back(*shader1);
-	/*shader2->CreateFromFiles(vShaderUC, fShaderUC);
-	shaderList.push_back(*shader2);*/
 }
 
 
@@ -485,8 +570,10 @@ int main()
 	Tgris = Texture("Textures/Gris_humo.tga");
 	Tgris.LoadTextureA();
 	//tPisoAlameda = Texture("Textures/Piso_alameda.tga");
-	tPisoAlameda = Texture("Textures/legoTextureCafe.tga");
+	tPisoAlameda = Texture("Textures/legoTextureGray.tga");
 	tPisoAlameda.LoadTextureA();
+	tPisoJardin = Texture("Textures/legoTextureGreen.tga");
+	tPisoJardin.LoadTextureA();
 	Material_brillante = Material(4.0f, 256);
 	Material_opaco = Material(0.3f, 4);
 
@@ -532,6 +619,9 @@ int main()
 	pickle_M.LoadModel("Models/Pepinillo.obj");
 	fuente_M = Model();
 	fuente_M.LoadModel("Models/Fuente.obj");
+	cabina_M = Model();
+	cabina_M.LoadModel("Models/Portable_Restroom.obj");
+	//Kiosco
 	base_M = Model();
 	base_M.LoadModel("Models/Base.obj");
 	columna_M = Model();
@@ -544,6 +634,49 @@ int main()
 	octagono_M.LoadModel("Models/Tapa.obj");
 	escalon_M = Model();
 	escalon_M.LoadModel("Models/Escalon.obj");
+	//Avatar Grandpa Rick
+	cabezaRick_M = Model();
+	cabezaRick_M.LoadModel("Models/CabezaRick.obj");
+	torax_M = Model();
+	torax_M.LoadModel("Models/ToraxText.obj");
+	cadera_M = Model();
+	cadera_M.LoadModel("Models/Cadera.obj");
+	entrepierna_M = Model();
+	entrepierna_M.LoadModel("Models/EntrePierna.obj");
+	piernaIzq_M = Model();
+	piernaIzq_M.LoadModel("Models/PiernaIzq.obj");
+	piernaDer_M = Model();
+	piernaDer_M.LoadModel("Models/PiernaDer.obj");
+	brazoIzq_M = Model();
+	brazoIzq_M.LoadModel("Models/BrazoIzq.obj");
+	brazoDer_M = Model();
+	brazoDer_M.LoadModel("Models/BrazoDer.obj");
+	manoIzq_M = Model();
+	manoIzq_M.LoadModel("Models/ManoIzq.obj");
+	manoDer_M = Model();
+	manoDer_M.LoadModel("Models/ManoDer.obj");
+
+	//Avatar Ryougi Shiki
+	RScabeza_M = Model();
+	RScabeza_M.LoadModel("Models/CabezaRS.obj");
+	RStorax_M = Model();
+	RStorax_M.LoadModel("Models/RSToraxText.obj");
+	RScadera_M = Model();
+	RScadera_M.LoadModel("Models/RSCadera.obj");
+	RSentrepierna_M = Model();
+	RSentrepierna_M.LoadModel("Models/RSEntrePierna.obj");
+	RSpiernaIzq_M = Model();
+	RSpiernaIzq_M.LoadModel("Models/RSPiernaIzq.obj");
+	RSpiernaDer_M = Model();
+	RSpiernaDer_M.LoadModel("Models/RSPiernaDer.obj");
+	RSbrazoIzq_M = Model();
+	RSbrazoIzq_M.LoadModel("Models/RSBrazoIzq.obj");
+	RSbrazoDer_M = Model();
+	RSbrazoDer_M.LoadModel("Models/RSBrazoDer.obj");
+	RSmanoIzq_M = Model();
+	RSmanoIzq_M.LoadModel("Models/RSManoIzq.obj");
+	RSmanoDer_M = Model();
+	RSmanoDer_M.LoadModel("Models/RSManoDer.obj");
 
 	//luz direccional, sólo 1 y siempre debe de existir
 	mainLight = DirectionalLight(1.0f, 1.0f, 1.0f,
@@ -605,8 +738,10 @@ int main()
 	pointLightCount++;
 	/*4.0f, 0.0f, (-6.4f - 1 * (3.2f))*/
 	unsigned int spotLightCount = 0;
+	unsigned int spotLightCountTemp = 0;
 
 
+	
 	//linterna
 	spotLights[0] = SpotLight(0.3f, 0.3f, 0.3f,
 		0.0f, 2.0f,
@@ -616,30 +751,34 @@ int main()
 		20.0f);
 	spotLightCount++;
 
-	////luz fija
-	//spotLights[1] = SpotLight(0.0f, 0.0f, 1.0f,
-	//	0.0f, 2.0f,
-	//	10.0f, 0.0f, 0.0f,
-	//	0.0f, -5.0f, 0.0f,
-	//	1.0f, 0.0f, 0.0f,
-	//	10.0f);
-	//spotLightCount++;
-	////luz de faro
-	//spotLights[2] = SpotLight(0.0f, 1.0f, 0.0f,
-	//	0.0f, 1.0f,
-	//	0.0f, -1.5f, 0.0f,
-	//	-4.0f, -1.0f, 0.0f,
-	//	1.0f, 0.0f, 0.0f,
-	//	10.0f);
-	//spotLightCount++;
-	////luz de helicoptero
-	//spotLights[3] = SpotLight(0.0f, 0.0f, 1.0f,
-	//	0.0f, 1.0f,
-	//	2.0 - movCoche, 2.0f, 0.0f,
-	//	0.0f, -5.0f, 0.0f,
-	//	1.0f, 0.0f, 0.0f,
-	//	10.0f);
-	//spotLightCount++;
+	//luz de fiesta 1
+	spotLights[1] = SpotLight(1.0f, 0.0f, 0.0f,
+		0.0f, 0.3f,
+		22.5f, 13.5f, -69.0f,
+		0.0f, -1.0f, 0.0f,
+		0.3f, 0.0f, 0.0f,
+		10.0f);
+	spotLightCount++;
+	//luz de fiesta 2
+	spotLights[2] = SpotLight(0.0f, 1.0f, 0.0f,
+		0.0f, 0.3f,
+		23.5f, 13.5f, -69.0f,
+		0.0f, -1.0f, 0.0f,
+		0.3f, 0.0f, 0.0f,
+		10.0f);
+	spotLightCount++;
+	//luz de fiesta 3
+	spotLights[3] = SpotLight(0.0f, 0.0f, 1.0f,
+		0.0f, 0.3f,
+		24.5f, 13.5f, -69.0f,
+		0.0f, -1.0f, 0.0f,
+		0.3f, 0.0f, 0.0f,
+		10.0f);
+	spotLightCount++;
+
+	
+
+	spotLightCountTemp = spotLightCount - 1;
 	glm::vec3 posblackhawk = glm::vec3(2.0f, 0.0f, 0.0f);
 
 	std::vector<std::string> skyboxFaces;
@@ -1356,8 +1495,10 @@ int main()
 	rotHelices = 0.0f;
 	incHelices = 0.001f;
 	retardo = 0.0f;
-
+	srand(time(NULL));
 	//Loop mientras no se cierra la ventana
+	GLfloat inicio;
+	spotLightCount = 1;
 	while (!mainWindow.getShouldClose())
 	{
 		GLfloat now = glfwGetTime();
@@ -1387,15 +1528,52 @@ int main()
 		if (luzSol <= 0.3)
 		{
 			pointLightCount = 10;
-			spotLightCount = 1;
+			spotLights[0] = SpotLight(0.3f, 0.3f, 0.3f,
+				0.0f, 2.0f,
+				0.0f, 0.0f, 0.0f,
+				0.0f, -1.0f, 0.0f,
+				1.0f, 0.0f, 0.0f,
+				20.0f);
 			skybox_Noche.DrawSkybox(camera.calculateViewMatrix(), projection);
 		}
 		else
 		{
 			skybox_Dia.DrawSkybox(camera.calculateViewMatrix(), projection);
 			pointLightCount = 0;
-			spotLightCount = 0;
+			spotLights[0] = SpotLight(0.0f, 0.0f, 0.0f,
+				0.0f, 2.0f,
+				0.0f, 0.0f, 0.0f,
+				0.0f, -1.0f, 0.0f,
+				1.0f, 0.0f, 0.0f,
+				20.0f);
 		}
+
+		if (espectaculo && siguiente)
+		{
+			spotLightCount = rand() % (4) + 1;
+			printf("Random es: %d", spotLightCount);
+			spotLights[1].SetFlash(glm::vec3(21.5f, 13.5f, -69.0f), glm::vec3(((rand() % 40) - 20.0f)/100.0f, -1.0f, ((rand() % 40) - 20.0f)/100.0f));
+			spotLights[2].SetFlash(glm::vec3(23.5f, 13.5f, -69.0f), glm::vec3(((rand() % 40) - 20.0f)/100.0f, -1.0f, ((rand() % 40) - 20.0f)/100.0f));
+			spotLights[3].SetFlash(glm::vec3(25.5f, 13.5f, -69.0f), glm::vec3(((rand() % 40) - 20.0f)/100.0f, -1.0f, ((rand() % 40) - 20.0f)/100.0f));
+			spotLightCountTemp = spotLightCount;
+
+			inicio = lastTime;
+			siguiente = false;
+		}
+		if (!siguiente)
+		{
+			if (lastTime - inicio >= 0.5)
+				siguiente = true;
+		}
+		if (!espectaculo)
+		{
+			spotLightCount = 1;
+		}
+		else
+		{
+			spotLightCount = spotLightCountTemp;
+		}
+
 
 		shaderList[0].UseShader();
 		uniformModel = shaderList[0].GetModelLocation();
@@ -1421,17 +1599,148 @@ int main()
 		glm::mat4 aux(1.0);
 		glm::vec3 color(1.0);
 
-
-		/*color = glm::vec3(1.0f, 1.0f, 1.0f);
-		glUniform3fv(uniformColor, 1, glm::value_ptr(color));*/
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(30.0f, 1.0f, 30.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		//pisoTexture.UseTexture();
 		tPisoAlameda.UseTexture();
 		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		meshList[2]->RenderMesh();
+
+		//Jardines en L
+		//A
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(0.0f, 0.15f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		tPisoJardin.UseTexture();
+		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		meshList[3]->RenderMesh();
+
+		//B
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(78.6f, 0.15f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		tPisoJardin.UseTexture();
+		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		meshList[3]->RenderMesh();
+
+		//I
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(0.0f, 0.15f, 199.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		tPisoJardin.UseTexture();
+		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		meshList[3]->RenderMesh();
+
+		//J
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(78.6f, 0.15f, 199.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		tPisoJardin.UseTexture();
+		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		meshList[3]->RenderMesh();
+
+
+
+		//A
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(0.0f, 0.15f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		tPisoJardin.UseTexture();
+		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		meshList[4]->RenderMesh();
+		
+		//B
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(96.2f, 0.15f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		tPisoJardin.UseTexture();
+		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		meshList[4]->RenderMesh();
+
+		//I
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(0.0f, 0.15f, 163.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		tPisoJardin.UseTexture();
+		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		meshList[4]->RenderMesh();
+
+		//J
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(96.2f, 0.15f, 163.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		tPisoJardin.UseTexture();
+		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		meshList[4]->RenderMesh();
+
+		//Jardines rectangulares
+		//C
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(0.0f, 0.15f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		tPisoJardin.UseTexture();
+		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		meshList[5]->RenderMesh();
+
+		//D
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(96.2f, 0.15f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		tPisoJardin.UseTexture();
+		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		meshList[5]->RenderMesh();
+
+		//E
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(0.0f, 0.15f, 44.5f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		tPisoJardin.UseTexture();
+		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		meshList[5]->RenderMesh();
+
+		//F
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(96.2f, 0.15f, 44.5f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		tPisoJardin.UseTexture();
+		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		meshList[5]->RenderMesh();
+
+		//G
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(0.0f, 0.15f, 89.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		tPisoJardin.UseTexture();
+		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		meshList[5]->RenderMesh();
+
+		//H
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(96.2f, 0.15f, 89.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		tPisoJardin.UseTexture();
+		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		meshList[5]->RenderMesh();
+
+
+		// Baños
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(19.0f, 0.0f, -183.0f));
+		model = glm::scale(model, glm::vec3(0.25f, 0.25f, 0.25f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		tPisoAlameda.UseTexture();
+		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		cabina_M.RenderModel();
+
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(28.0f, 0.0f, -183.0f));
+		model = glm::scale(model, glm::vec3(0.25f, 0.25f, 0.25f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		tPisoAlameda.UseTexture();
+		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		cabina_M.RenderModel();
+
 
 		model = glm::mat4(1.0);
 		posblackhawk = glm::vec3(posXModelo + movModelo_x, posYModelo + movModelo_y, posZModelo + movModelo_z);
@@ -8653,7 +8962,7 @@ int main()
 		model = glm::translate(model, glm::vec3(23.5f, 0.0f, -69.0f));
 		model = glm::scale(model, glm::vec3(0.25f, 0.25f, 0.25f));
 		aux = model;
-		color = glm::vec3(0.7f, 0.7f, 0.0f);
+		color = glm::vec3(0.3f, 0.3f, 0.0f);
 		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 
@@ -8664,7 +8973,7 @@ int main()
 		model = aux;
 		model = glm::translate(model, glm::vec3(11.0f, 15.0f, 26.5f));
 		//model = glm::scale(model, glm::vec3(0.f, 0.075f, 0.075f));
-		color = glm::vec3(0.5f, 0.5f, 0.0f);
+		color = glm::vec3(0.3f, 0.3f, 0.0f);
 		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 
@@ -8682,7 +8991,7 @@ int main()
 		model = aux;
 		model = glm::translate(model, glm::vec3(-11.0f, 15.0f, 26.5f));
 		//model = glm::scale(model, glm::vec3(0.f, 0.075f, 0.075f));
-		color = glm::vec3(0.5f, 0.5f, 0.0f);
+		color = glm::vec3(0.3f, 0.3f, 0.0f);
 		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 
@@ -8694,7 +9003,7 @@ int main()
 		//
 		model = aux;
 		model = glm::translate(model, glm::vec3(11.0f, 15.0f, -26.5f));
-		color = glm::vec3(0.5f, 0.5f, 0.0f);
+		color = glm::vec3(0.3f, 0.3f, 0.0f);
 		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 
@@ -8703,7 +9012,7 @@ int main()
 
 		model = aux;
 		model = glm::translate(model, glm::vec3(-11.0f, 15.0f, -26.5f));
-		color = glm::vec3(0.5f, 0.5f, 0.0f);
+		color = glm::vec3(0.3f, 0.3f, 0.0f);
 		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 
@@ -8721,7 +9030,7 @@ int main()
 		//
 		model = aux;
 		model = glm::translate(model, glm::vec3(26.5f, 15.0f, -11.0f));
-		color = glm::vec3(0.5f, 0.5f, 0.0f);
+		color = glm::vec3(0.3f, 0.3f, 0.0f);
 		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 
@@ -8739,7 +9048,7 @@ int main()
 
 		model = aux;
 		model = glm::translate(model, glm::vec3(26.5f, 15.0f, 11.0f));
-		color = glm::vec3(0.5f, 0.5f, 0.0f);
+		color = glm::vec3(0.3f, 0.3f, 0.0f);
 		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 
@@ -8757,7 +9066,7 @@ int main()
 		//
 		model = aux;
 		model = glm::translate(model, glm::vec3(-26.5f, 15.0f, -11.0f));
-		color = glm::vec3(0.5f, 0.5f, 0.0f);
+		color = glm::vec3(0.3f, 0.3f, 0.0f);
 		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 
@@ -8775,7 +9084,7 @@ int main()
 
 		model = aux;
 		model = glm::translate(model, glm::vec3(-26.5f, 15.0f, 11.0f));
-		color = glm::vec3(0.5f, 0.5f, 0.0f);
+		color = glm::vec3(0.3f, 0.3f, 0.0f);
 		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 
@@ -9058,6 +9367,187 @@ int main()
 		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		escalon_M.RenderModel();
 
+		color = glm::vec3(0.5f, 0.5f, 0.5f);
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+
+		/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		//////////////////////////////////////////////////////// Avatares ///////////////////////////////////////////////////////////
+		/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+		//Grandpa Rick
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(10.0f+movXAvatar1, 2.0f, 0.0f + movZAvatar1));
+		model = glm::rotate(model, headingAvatar1 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(0.05f, 0.05f, 0.05f));
+		aux = model;
+		/*color = glm::vec3(0.5f, 0.5f, 0.5f);
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));*/
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+
+		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		torax_M.RenderModel();
+
+		model = aux;
+		model = glm::translate(model, glm::vec3(9.5f, 5.0f, 0.0));
+		model = glm::rotate(model, rotacionAvatar1 * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		brazoIzq_M.RenderModel();
+
+		model = glm::translate(model, glm::vec3(5.0f, -10.0f, -3.0));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
+
+		manoIzq_M.RenderModel();
+
+
+		model = aux;
+		model = glm::translate(model, glm::vec3(-9.5f, 5.0f, 0.0));
+		model = glm::rotate(model, rotacionAvatar1 * toRadians, glm::vec3(-1.0f, 0.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		color = glm::vec3(0.5f, 0.5f, 0.5f);
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		brazoDer_M.RenderModel();
+
+		model = glm::translate(model, glm::vec3(-5.0f, -10.0f, -3.0));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
+
+		manoDer_M.RenderModel();
+
+		model = aux;
+		model = glm::translate(model, glm::vec3(0.0f, 10.0f, 0.0));
+		color = glm::vec3(0.5f, 0.5f, 0.5f);
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+
+		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		cabezaRick_M.RenderModel();
+
+		model = aux;
+		model = glm::translate(model, glm::vec3(0.0f, -12.0f, 0.0));
+		color = glm::vec3(0.36f, 0.2f, 0.09f);
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+
+		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		RScadera_M.RenderModel();
+
+		model = glm::translate(model, glm::vec3(0.0f, -6.0f, 0.0f));
+		aux = model;
+		model = glm::translate(model, glm::vec3(1.0f, 0.0f, 0.0));
+		color = glm::vec3(0.36f, 0.2f, 0.09f);
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		model = glm::rotate(model, rotacionAvatar1 * toRadians, glm::vec3(-1.0f, 0.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+
+		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		piernaIzq_M.RenderModel();
+
+		model = aux;
+		model = glm::translate(model, glm::vec3(-1.0f, 0.0f, 0.0));
+		model = glm::rotate(model, rotacionAvatar1 * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
+		color = glm::vec3(0.36f, 0.2f, 0.09f);
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+
+		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		piernaDer_M.RenderModel();
+
+		// Ryougi Shiki
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(15.0f + movXAvatar2, 2.0f, 0.0f + movZAvatar2));
+		model = glm::rotate(model, headingAvatar2 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(0.05f, 0.05f, 0.05f));
+		aux = model;
+		/*color = glm::vec3(0.5f, 0.5f, 0.5f);
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));*/
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+
+		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		RStorax_M.RenderModel();
+
+		model = aux;
+		model = glm::translate(model, glm::vec3(9.5f, 5.0f, 0.0));
+		model = glm::rotate(model, rotacionAvatar2 * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		RSbrazoIzq_M.RenderModel();
+
+		model = glm::translate(model, glm::vec3(5.0f, -10.0f, -3.0));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
+
+		RSmanoIzq_M.RenderModel();
+
+
+		model = aux;
+		model = glm::translate(model, glm::vec3(-9.5f, 5.0f, 0.0));
+		model = glm::rotate(model, rotacionAvatar2 * toRadians, glm::vec3(-1.0f, 0.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		color = glm::vec3(0.5f, 0.5f, 0.5f);
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		RSbrazoDer_M.RenderModel();
+
+		model = glm::translate(model, glm::vec3(-5.0f, -10.0f, -3.0));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
+
+		RSmanoDer_M.RenderModel();
+
+		model = aux;
+		model = glm::translate(model, glm::vec3(0.0f, 10.0f, 0.0));
+		color = glm::vec3(0.5f, 0.5f, 0.5f);
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+
+		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		RScabeza_M.RenderModel();
+
+		model = aux;
+		model = glm::translate(model, glm::vec3(0.0f, -12.0f, 0.0));
+		color = glm::vec3(0.36f, 0.2f, 0.09f);
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+
+		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		RScadera_M.RenderModel();
+
+		model = glm::translate(model, glm::vec3(0.0f, -6.0f, 0.0f));
+		aux = model;
+		model = glm::translate(model, glm::vec3(1.0f, 0.0f, 0.0));
+		color = glm::vec3(0.36f, 0.2f, 0.09f);
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		model = glm::rotate(model, rotacionAvatar2 * toRadians, glm::vec3(-1.0f, 0.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+
+		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		RSpiernaIzq_M.RenderModel();
+
+		model = aux;
+		model = glm::translate(model, glm::vec3(-1.0f, 0.0f, 0.0));
+		model = glm::rotate(model, rotacionAvatar2 * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
+		color = glm::vec3(0.36f, 0.2f, 0.09f);
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+
+		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		RSpiernaDer_M.RenderModel();
+
+
+		//model = aux;
+		//model = glm::translate(model, glm::vec3(0.0f, .5f, 0.0));
+		////model = glm::scale(model, glm::vec3(0.f, 0.075f, 0.075f));
+		////color = glm::vec3(0.5f, 0.5f, 0.0f);
+		//glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		//glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+
+		//Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		//cabezaRick_M.RenderModel();
+
+
 		//Agave ¿qué sucede si lo renderizan antes del coche y de la pista?
 		//model = glm::mat4(1.0);
 		//model = glm::translate(model, glm::vec3(0.0f, -1.7f, -2.0f));
@@ -9069,6 +9559,7 @@ int main()
 		//Tagave.UseTexture();
 		//Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		//meshList[3]->RenderMesh();
+
 
 
 
@@ -9114,18 +9605,214 @@ void inputKeyframes(bool* keys)
 		}
 	}
 
+	//if (keys[GLFW_KEY_L])
+	//{
+	//	if (guardoFrame < 1)
+	//	{
+	//		saveFrame();
+	//		printf("movModelo_x es: %f\n", movModelo_x);
+	//		//printf("movModelo_y es: %f\n", movModelo_y);
+	//		printf("presiona P para habilitar guardar otro frame'\n");
+	//		guardoFrame++;
+	//		reinicioFrame = 0;
+	//	}
+	//}
+	if (keys[GLFW_KEY_Z])
+	{
+		espectaculo = true;
+	}
+
+	if (keys[GLFW_KEY_X])
+	{
+		espectaculo = false;
+	}
+
+	// Control de Grandpa Rick
+	if (keys[GLFW_KEY_UP])
+	{
+		if (cambia_sentido1)
+		{
+			rotacionAvatar1 += 8.0f;
+			if (rotacionAvatar1 >= 60.0f)
+			{
+				cambia_sentido1 = false;
+			}
+		}
+		else
+		{
+			rotacionAvatar1 -= 8.0f;
+			if (rotacionAvatar1 <= -60.0f)
+			{
+				cambia_sentido1 = true;
+			}
+		}
+		headingAvatar1 = 180.0f;
+		movZAvatar1 -= 0.1f;
+		
+	}
+
+	if (keys[GLFW_KEY_RIGHT])
+	{
+		if (cambia_sentido1)
+		{
+			rotacionAvatar1 += 8.0f;
+			if (rotacionAvatar1 >= 60.0f)
+			{
+				cambia_sentido1 = false;
+			}
+		}
+		else
+		{
+			rotacionAvatar1 -= 8.0f;
+			if (rotacionAvatar1 <= -60.0f)
+			{
+				cambia_sentido1 = true;
+			}
+		}
+		headingAvatar1 = 90.0f;
+		movXAvatar1 += 0.1f;
+
+	}
+
+	if (keys[GLFW_KEY_DOWN])
+	{
+		if (cambia_sentido1)
+		{
+			rotacionAvatar1 += 8.0f;
+			if (rotacionAvatar1 >= 60.0f)
+			{
+				cambia_sentido1 = false;
+			}
+		}
+		else
+		{
+			rotacionAvatar1 -= 8.0f;
+			if (rotacionAvatar1 <= -60.0f)
+			{
+				cambia_sentido1 = true;
+			}
+		}
+		headingAvatar1 = 0.0f;
+		movZAvatar1 += 0.1f;
+
+	}
+
+	if (keys[GLFW_KEY_LEFT])
+	{
+		if (cambia_sentido1)
+		{
+			rotacionAvatar1 += 8.0f;
+			if (rotacionAvatar1 >= 60.0f)
+			{
+				cambia_sentido1 = false;
+			}
+		}
+		else
+		{
+			rotacionAvatar1 -= 8.0f;
+			if (rotacionAvatar1 <= -60.0f)
+			{
+				cambia_sentido1 = true;
+			}
+		}
+		headingAvatar1 = 270.0f;
+		movXAvatar1 -= 0.1f;
+
+	}
+	// Control de Ryougi Shiki
+	if (keys[GLFW_KEY_I])
+	{
+		if (cambia_sentido2)
+		{
+			rotacionAvatar2 += 8.0f;
+			if (rotacionAvatar2 >= 60.0f)
+			{
+				cambia_sentido2 = false;
+			}
+		}
+		else
+		{
+			rotacionAvatar2 -= 8.0f;
+			if (rotacionAvatar2 <= -60.0f)
+			{
+				cambia_sentido2 = true;
+			}
+		}
+		headingAvatar2 = 180.0f;
+		movZAvatar2 -= 0.1f;
+
+	}
+
 	if (keys[GLFW_KEY_L])
 	{
-		if (guardoFrame < 1)
+		if (cambia_sentido2)
 		{
-			saveFrame();
-			printf("movModelo_x es: %f\n", movModelo_x);
-			//printf("movModelo_y es: %f\n", movModelo_y);
-			printf("presiona P para habilitar guardar otro frame'\n");
-			guardoFrame++;
-			reinicioFrame = 0;
+			rotacionAvatar2+= 8.0f;
+			if (rotacionAvatar2>= 60.0f)
+			{
+				cambia_sentido2= false;
+			}
 		}
+		else
+		{
+			rotacionAvatar2-= 8.0f;
+			if (rotacionAvatar2<= -60.0f)
+			{
+				cambia_sentido2= true;
+			}
+		}
+		headingAvatar2= 90.0f;
+		movXAvatar2+= 0.1f;
+
 	}
+
+	if (keys[GLFW_KEY_K])
+	{
+		if (cambia_sentido2)
+		{
+			rotacionAvatar2+= 8.0f;
+			if (rotacionAvatar2>= 60.0f)
+			{
+				cambia_sentido2= false;
+			}
+		}
+		else
+		{
+			rotacionAvatar2-= 8.0f;
+			if (rotacionAvatar2<= -60.0f)
+			{
+				cambia_sentido2= true;
+			}
+		}
+		headingAvatar2= 0.0f;
+		movZAvatar2+= 0.1f;
+
+	}
+
+	if (keys[GLFW_KEY_J])
+	{
+		if (cambia_sentido2)
+		{
+			rotacionAvatar2+= 8.0f;
+			if (rotacionAvatar2>= 60.0f)
+			{
+				cambia_sentido2= false;
+			}
+		}
+		else
+		{
+			rotacionAvatar2-= 8.0f;
+			if (rotacionAvatar2<= -60.0f)
+			{
+				cambia_sentido2= true;
+			}
+		}
+		headingAvatar2= 270.0f;
+		movXAvatar2-= 0.1f;
+
+	}
+	//////////////////////
+
 	if (keys[GLFW_KEY_P])
 	{
 		if (reinicioFrame < 1)
