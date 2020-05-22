@@ -8830,9 +8830,9 @@ int main()
 
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(0.0f + Colibri_TX, 20.0f + Colibri_TY, 0.0f + Colibri_TZ));
-		model = glm::rotate(model, (-90)* toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
-		model = glm::rotate(model, ( 90)* toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
-		model = glm::rotate(model, ( 90 + Colibri_RZ)* toRadians, glm::vec3(0.0f, 0.0f, 1.0f));
+		//model = glm::rotate(model, (-90 + Colibri_RX)* toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
+		//model = glm::rotate(model, (90 + Colibri_RY)* toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::rotate(model, (Colibri_RZ)* toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(100.0f, 100.0f, 100.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
@@ -8841,10 +8841,11 @@ int main()
 		model = glm::mat4(1.0);
 		model = glm::scale(model, glm::vec3(0.5f, 0.5f, 0.5f));
 		model = glm::translate(model, glm::vec3(0.0f + Bicicleta_TX, 0.0f + Bicicleta_TY, 0.0f + Bicicleta_TZ));
+
 		//model = glm::rotate(model, (-90 + Bicicleta_RX)* toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
 		//model = glm::rotate(model, ( 90 + Bicicleta_RY)* toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::rotate(model, (Bicicleta_RZ)* toRadians, glm::vec3(0.0f, 0.0f, 1.0f));
-		
+
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		Bicicleta.RenderModel();
@@ -8955,7 +8956,7 @@ int main()
 		//Colibri
 		//Avanza
 		if (Estado_Colibri == 0 && Colibri_TX < 40.0f) {
-			Colibri_TX +=  0.1;
+			Colibri_TX += 0.1;
 		}
 		//Gira
 		if (Colibri_TX >= 40.0f) {
@@ -8963,19 +8964,19 @@ int main()
 		}
 		if (Estado_Colibri == 3 && Colibri_TX > 30.0f) {
 			if (Colibri_RZ <= 0.0) {
-				Colibri_RZ += 3;
+				Colibri_RZ += 10;
 				Colibri_TZ -= 0.3;
 				Colibri_TX += 0.3;
 			}
-			if (Colibri_RZ > 0.0 && Colibri_RZ < 90.0) {
-				Colibri_RZ += 3;
+			if (Colibri_RZ > 0.0 && Colibri_RZ < 180.0) {
+				Colibri_RZ += 10;
 				Colibri_TZ -= 0.3;
 				Colibri_TX -= 0.3;
 			}
 		}
-		if (Estado_Colibri == 3 && Colibri_RZ >= 90.0f) {
+		if (Estado_Colibri == 3 && Colibri_RZ >= 180.0f) {
 			Estado_Colibri = 4;
-			Colibri_RZ = 90;
+			Colibri_RZ = 180;
 		}
 		//Retrocede
 		if (Estado_Colibri == 4 && (Colibri_TX > -8.5f)) {
@@ -8985,27 +8986,27 @@ int main()
 			Estado_Colibri = 5;
 		}
 		//Gira otra vez
-		if (Estado_Colibri == 5 && Colibri_RZ < 270.0f) {
+		if (Estado_Colibri == 5 && Colibri_RZ < 360.0f) {
 			if (Colibri_RZ >= 0.0) {
-				Colibri_RZ += 5;
+				Colibri_RZ += 10;
 				Colibri_TZ += 0.3;
 				Colibri_TX -= 0.3;
 			}
-			if (Colibri_RZ < 0.0 && Colibri_RZ > 180.0) {
-				Colibri_RZ += 5;
+			if (Colibri_RZ < 0.0 && Colibri_RZ > 1270.0) {
+				Colibri_RZ += 10;
 				Colibri_TZ -= 0.3;
 				Colibri_TX += 0.3;
 			}
 		}
-		if (Estado_Colibri == 5 && Colibri_RZ >= 270.0f) {
+		if (Estado_Colibri == 5 && Colibri_RZ >= 360.0f) {
 			Estado_Colibri = 0;
 		}
 
 
 
 		//
-		Bicicleta_RX -=10;
-		Bicicleta_RZ +=10;
+		Bicicleta_RX -= 10;
+		Bicicleta_RZ += 10;
 		//
 
 		model = glm::mat4(1.0);
