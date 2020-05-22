@@ -1,8 +1,3 @@
-/*
-Semestre 2020-2
-Animación por keyframes
-*/
-//para cargar imagen
 #define STB_IMAGE_IMPLEMENTATION
 
 #include <stdio.h>
@@ -75,6 +70,12 @@ float headingAvatar1 = 0.0f;
 float movXAvatar1 = 0.0f;
 float movYAvatar1 = 0.0f;
 float movZAvatar1 = 0.0f;
+float rotBrazo = 0.0f;
+float rotMano = 0.0f;
+float tamAvatar = 1.0f;
+float desAvatar = 0.0f;
+float desPortal = 0.0f;
+float tamPortal = 0.0f;
 bool cambia_sentido1 = false;
 // Variables Ryougi Shiki
 float rotacionAvatar2 = 0.0f;
@@ -86,6 +87,7 @@ bool cambia_sentido2 = false;
 
 bool t1 = true;
 bool t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, t12, t13, t14, t15, t16, t17, t18, t19, t20, ta, tb, espectaculo = false, siguiente=true;
+bool a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11 = false;
 Window mainWindow;
 std::vector<Mesh*> meshList;
 std::vector<Shader> shaderList;
@@ -101,6 +103,7 @@ Texture Tverde;
 Texture Tgris;
 Texture tPisoAlameda;
 Texture tPisoJardin;
+Texture tPortal;
 //materiales
 Material Material_brillante;
 Material Material_opaco;
@@ -132,6 +135,8 @@ Model nave_M;
 Model pickle_M;
 Model fuente_M;
 Model cabina_M;
+Model pistola_M;
+Model portal_M;
 
 //Primitivas kiosco
 Model base_M;
@@ -569,6 +574,8 @@ int main()
 	Tverde.LoadTextureA();
 	Tgris = Texture("Textures/Gris_humo.tga");
 	Tgris.LoadTextureA();
+	tPortal = Texture("Textures/Portal.tga");
+	tPortal.LoadTextureA();
 	//tPisoAlameda = Texture("Textures/Piso_alameda.tga");
 	tPisoAlameda = Texture("Textures/legoTextureGray.tga");
 	tPisoAlameda.LoadTextureA();
@@ -615,6 +622,10 @@ int main()
 	esquinaRejasInv_M.LoadModel("Models/EsquinaRejasInvertido.obj");
 	nave_M = Model();
 	nave_M.LoadModel("Models/Nave.obj");
+	portal_M = Model();
+	portal_M.LoadModel("Models/Portal.obj");
+	pistola_M = Model();
+	pistola_M.LoadModel("Models/Pistola.obj");
 	pickle_M = Model();
 	pickle_M.LoadModel("Models/Pepinillo.obj");
 	fuente_M = Model();
@@ -8915,8 +8926,8 @@ int main()
 		model = glm::rotate(model, (-90.0f + rotCarroY) * toRadians, glm::vec3(0.0f, -1.0f, 0.0f));
 		//model = glm::rotate(model, rotCarroX * toRadians, glm::vec3(-1.0f, 0.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
-		color = glm::vec3(0.1f, 0.1f, 0.1f);
-		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		//color = glm::vec3(0.1f, 0.1f, 0.1f);
+		//glUniform3fv(uniformColor, 1, glm::value_ptr(color));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		nave_M.RenderModel();
@@ -9335,6 +9346,7 @@ int main()
 
 		color = glm::vec3(0.5f, 0.5f, 0.5f);
 		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		
 
 		/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		//////////////////////////////////////////////////////// Avatares ///////////////////////////////////////////////////////////
@@ -9344,7 +9356,12 @@ int main()
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(10.0f+movXAvatar1, 2.0f, 0.0f + movZAvatar1));
 		model = glm::rotate(model, headingAvatar1 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
-		model = glm::scale(model, glm::vec3(0.05f, 0.05f, 0.05f));
+		// MODELO PORTAL
+		glm::mat4 auxPortal(1.0);
+		auxPortal = model;
+		//
+		model = glm::scale(model, tamAvatar*glm::vec3(0.05f, 0.05f, 0.05f));
+		model = glm::translate(model, glm::vec3(0.0f, 0.0f, desAvatar * 20.0f));
 		aux = model;
 		/*color = glm::vec3(0.5f, 0.5f, 0.5f);
 		glUniform3fv(uniformColor, 1, glm::value_ptr(color));*/
@@ -9352,6 +9369,8 @@ int main()
 
 		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		torax_M.RenderModel();
+		
+
 
 		model = aux;
 		model = glm::translate(model, glm::vec3(9.5f, 5.0f, 0.0));
@@ -9370,6 +9389,7 @@ int main()
 		model = aux;
 		model = glm::translate(model, glm::vec3(-9.5f, 5.0f, 0.0));
 		model = glm::rotate(model, rotacionAvatar1 * toRadians, glm::vec3(-1.0f, 0.0f, 0.0f));
+		model = glm::rotate(model, rotBrazo * toRadians, glm::vec3(-1.0f, 0.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		color = glm::vec3(0.5f, 0.5f, 0.5f);
@@ -9377,10 +9397,17 @@ int main()
 		brazoDer_M.RenderModel();
 
 		model = glm::translate(model, glm::vec3(-5.0f, -10.0f, -3.0));
+		model = glm::rotate(model, rotMano * toRadians, glm::vec3(-1.0f, 0.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
-
 		manoDer_M.RenderModel();
+		model = glm::translate(model, glm::vec3(-2.5f, -10.0f, 0.0));
+		//model = glm::scale(model, glm::vec3(10.05f, 10.05f, 10.05f));
+		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		pistola_M.RenderModel();
+
+
 
 		model = aux;
 		model = glm::translate(model, glm::vec3(0.0f, 10.0f, 0.0));
@@ -9399,6 +9426,8 @@ int main()
 
 		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		RScadera_M.RenderModel();
+		
+		
 
 		model = glm::translate(model, glm::vec3(0.0f, -6.0f, 0.0f));
 		aux = model;
@@ -9502,6 +9531,188 @@ int main()
 		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		RSpiernaDer_M.RenderModel();
 
+		// ANIMACION PORTAL
+
+		if (a0)
+		{
+			tamPortal = 0.0f;
+			rotBrazo = 0.0f;
+			rotMano = 0.0f;
+			desAvatar = 0.0f;
+			desPortal = 0.0f;
+			a0 = false;
+			a1 = true;
+		}
+		if (a1)
+		{
+			rotBrazo += movOffset * deltaTime * 40.0f;
+			if (rotBrazo >= 90.0f)
+			{
+				a1 = false;
+				a2 = true;
+			}
+		}
+		if (a2)
+		{
+			rotMano -= movOffset * deltaTime * 40.0f;
+			if (rotMano <= -45.0f)
+			{
+				a2 = false;
+				a3 = true;
+			}
+		}
+		if (a3)
+		{
+			if (rotMano <= 0.0f)
+				rotMano += movOffset * deltaTime * 60.0f;
+			if (rotBrazo >= 0.0f)
+				rotBrazo -= movOffset * deltaTime * 40.0f;
+			tamPortal += movOffset * deltaTime * 0.4f;// *4.0f;;
+			if (tamPortal >= 1.0f)
+			{
+				a3 = false;
+				a4 = true;
+			}
+		}
+		if (a4)
+		{
+			if (cambia_sentido1)
+			{
+				rotacionAvatar1 += movOffset * deltaTime * 40.0f;
+				if (rotacionAvatar1 >= 60.0f)
+				{
+					cambia_sentido1 = false;
+				}
+			}
+			else
+			{
+				rotacionAvatar1 -= movOffset * deltaTime * 40.0f;
+				if (rotacionAvatar1 <= -60.0f)
+				{
+					cambia_sentido1 = true;
+				}
+			}
+			desAvatar += movOffset * deltaTime * 0.8f;
+			if (desAvatar >= 3.5f)
+			{
+				a4 = false;
+				a5 = true;
+			}
+		}
+		if (a5)
+		{
+			tamAvatar = 0.0f;
+			a5 = false;
+			a6 = true;
+			printf("Salto a 6\n");
+		}
+		
+		if (a6)
+		{
+			tamPortal -= movOffset * deltaTime * 0.4f;
+			printf("Tamano de portal es %f\n", tamPortal);
+			if (tamPortal <= 0.0f)
+			{
+				a6 = false;
+				a7 = true;
+				printf("Salto a 7\n");
+			}
+		}
+		if (a7)
+		{
+			desPortal += 8.5f;
+			desAvatar += 10.0f;
+			a7 = false;
+			a8 = true;
+			printf("Salto a 8\n");
+		}
+		if (a8)
+		{
+			tamPortal += movOffset * deltaTime * 0.4f;// *4.0f;;
+			if (tamPortal >= 1.0f)
+			{
+				a8 = false;
+				a9 = true;
+				printf("Portal reapareció. Salto a 9\n");
+			}
+		}
+		if (a9)
+		{
+			tamAvatar = 1.0f;
+			a9 = false;
+			a10 = true;
+			printf("Avatar reapareció. Salto a 10\n");
+		}
+		if (a10)
+		{
+			if (cambia_sentido1)
+			{
+				rotacionAvatar1 += movOffset * deltaTime * 40.0f;
+				if (rotacionAvatar1 >= 60.0f)
+				{
+					cambia_sentido1 = false;
+				}
+			}
+			else
+			{
+				rotacionAvatar1 -= movOffset * deltaTime * 40.0f;
+				if (rotacionAvatar1 <= -60.0f)
+				{
+					cambia_sentido1 = true;
+				}
+			}
+			desAvatar += movOffset * deltaTime * 0.8f;
+			//desPortal -= movOffset * deltaTime * 0.8f;
+			if (rotacionAvatar1 > -10.0f && rotacionAvatar1 < 10.0f)
+			{
+				a10 = false;
+				a11 = true;
+				printf("Salto al final\n");
+			}
+		}
+		if (a11)
+		{
+			tamPortal -= movOffset * deltaTime * 0.4f;
+			printf("Tamano de portal es %f\n", tamPortal);
+			if (tamPortal <= 0.0f)
+			{
+				a11 = false;
+				if (headingAvatar1 == 0.0f)
+				{
+					movZAvatar1 += desAvatar;
+					desAvatar = 0.0f;
+				}
+				if (headingAvatar1 == 90.0f)
+				{
+					movXAvatar1 += desAvatar;
+					desAvatar = 0.0f;
+				}
+				if (headingAvatar1 == 180.0f)
+				{
+					movZAvatar1 -= desAvatar;
+					desAvatar = 0.0f;
+				}
+				if (headingAvatar1 == 270.0f)
+				{
+					movXAvatar1 -= desAvatar;
+					desAvatar = 0.0f;
+				}
+				printf("Final\n");
+			}
+		}
+		color = glm::vec3(0.33f, 0.33f, 0.33f);
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		model = auxPortal;
+		model = glm::translate(model, glm::vec3(0.0f, -2.0f, 4.0 + desPortal));
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		//model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
+		model = glm::scale(model, glm::vec3(tamPortal, tamPortal, tamPortal));
+		model = glm::scale(model, glm::vec3(0.05f, 0.05f, 0.05f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		tPortal.UseTexture();
+		portal_M.RenderModel();
 
 		//model = aux;
 		//model = glm::translate(model, glm::vec3(0.0f, .5f, 0.0));
@@ -9583,6 +9794,14 @@ void inputKeyframes(bool* keys)
 	//		reinicioFrame = 0;
 	//	}
 	//}
+	// INICIO ANIMACION PORTAL
+	if (keys[GLFW_KEY_M])
+	{
+		a0 = true;
+		rotacionAvatar1 = 0.0f;
+		cambia_sentido1 = true;
+	}
+
 	if (keys[GLFW_KEY_Z])
 	{
 		espectaculo = true;
