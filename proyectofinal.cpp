@@ -64,6 +64,12 @@ float rotCarroY;
 float rotCarroZ;
 float tiempoOffset;
 float retardo;
+float Colibri_TX = 0.0f;
+float Colibri_TY = 0.0f;
+float Colibri_TZ = 0.0f;
+float Colibri_RX = 0.0f;
+float Colibri_RY = 0.0f;
+float Colibri_RZ = 0.0f;
 // Variables Grandpa Rick
 float rotacionAvatar1 = 0.0f;
 float headingAvatar1 = 0.0f;
@@ -135,6 +141,8 @@ Model nave_M;
 Model pickle_M;
 Model fuente_M;
 Model cabina_M;
+Model Colibri;
+Model Bicicleta;
 Model pistola_M;
 Model portal_M;
 
@@ -632,6 +640,10 @@ int main()
 	fuente_M.LoadModel("Models/Fuente.obj");
 	cabina_M = Model();
 	cabina_M.LoadModel("Models/Portable_Restroom.obj");
+	Colibri = Model();
+	Colibri.LoadModel("Models/Colibri.obj");
+	Bicicleta = Model();
+	Bicicleta.LoadModel("Models/Bicicleta.obj");
 	//Kiosco
 	base_M = Model();
 	base_M.LoadModel("Models/Base.obj");
@@ -1466,6 +1478,15 @@ int main()
 	KeyFrame[87].giroModeloY = 90.0f;
 	KeyFrame[87].giroModeloZ = 0.0f;
 
+	//Para animaciones basicas
+	float Bicicleta_TX = 0.0f;
+	float Bicicleta_TY = 0.0f;
+	float Bicicleta_TZ = 0.0f;
+	float Bicicleta_RX = 0.0f;
+	float Bicicleta_RY = 0.0f;
+	float Bicicleta_RZ = 0.0f;
+	int Estado_Bicicleta = 0;
+	int Estado_Colibri = 0;
 
 	//Variable contadora para el cambio dia y noche
 	float tiempo_Dia = 0.0f;
@@ -8818,6 +8839,27 @@ int main()
 		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		fuente_M.RenderModel();
 
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(0.0f + Colibri_TX, 20.0f + Colibri_TY, 0.0f + Colibri_TZ));
+		//model = glm::rotate(model, (-90 + Colibri_RX)* toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
+		//model = glm::rotate(model, (90 + Colibri_RY)* toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::rotate(model, (Colibri_RZ)*toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(100.0f, 100.0f, 100.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		Colibri.RenderModel();
+
+		model = glm::mat4(1.0);
+		model = glm::scale(model, glm::vec3(0.5f, 0.5f, 0.5f));
+		model = glm::translate(model, glm::vec3(-60.0f + Bicicleta_TX, 0.5f + Bicicleta_TY, 0.0f + Bicicleta_TZ));
+		//model = glm::rotate(model, (-90 + Bicicleta_RX)* toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
+		//model = glm::rotate(model, ( 90 + Bicicleta_RY)* toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::rotate(model, (Bicicleta_RZ)*toRadians, glm::vec3(0.0f, 0.0f, 1.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		Bicicleta.RenderModel();
+
+
 		//Animación compleja
 		//tramo inicial
 		if (t1)
@@ -8916,6 +8958,100 @@ int main()
 				rotCarroY = 0.0f;
 				t16 = false;
 				t1 = true;
+			}
+		}
+
+		//Colibri
+		//Avanza
+		if (Estado_Colibri == 0 && Colibri_TX < 40.0f) {
+			Colibri_TX += 0.1;
+		}
+		//Gira
+		if (Colibri_TX >= 40.0f) {
+			Estado_Colibri = 3;
+		}
+		if (Estado_Colibri == 3 && Colibri_TX > 30.0f) {
+			if (Colibri_RZ <= 0.0) {
+				Colibri_RZ += 10;
+				Colibri_TZ -= 0.3;
+				Colibri_TX += 0.3;
+			}
+			if (Colibri_RZ > 0.0 && Colibri_RZ < 180.0) {
+				Colibri_RZ += 10;
+				Colibri_TZ -= 0.3;
+				Colibri_TX -= 0.3;
+			}
+		}
+		if (Estado_Colibri == 3 && Colibri_RZ >= 180.0f) {
+			Estado_Colibri = 4;
+			Colibri_RZ = 180;
+		}
+		//Retrocede
+		if (Estado_Colibri == 4 && (Colibri_TX > -8.5f)) {
+			Colibri_TX -= 0.1;
+		}
+		if (Colibri_TX <= -8.5f) {
+			Estado_Colibri = 5;
+		}
+		//Gira otra vez
+		if (Estado_Colibri == 5 && Colibri_RZ < 360.0f) {
+			if (Colibri_RZ >= 0.0) {
+				Colibri_RZ += 10;
+				Colibri_TZ += 0.3;
+				Colibri_TX -= 0.3;
+			}
+			if (Colibri_RZ < 0.0 && Colibri_RZ > 1270.0) {
+				Colibri_RZ += 10;
+				Colibri_TZ -= 0.3;
+				Colibri_TX += 0.3;
+			}
+		}
+		if (Estado_Colibri == 5 && Colibri_RZ >= 360.0f) {
+			Estado_Colibri = 0;
+		}
+
+
+		if (Estado_Bicicleta == 0)
+		{
+			Bicicleta_TX += movOffset * deltaTime * 2.0f;
+			if (Bicicleta_TX >= 50.0f)
+			{
+				Estado_Bicicleta = 1;
+			}
+		}
+		if (Estado_Bicicleta == 1)
+		{
+			Bicicleta_TX += movOffset * deltaTime * 2.0f;
+			Bicicleta_RZ += movOffset * deltaTime * 2.0f;
+			if (Bicicleta_RZ >= 45.0f)
+			{
+				Estado_Bicicleta = 2;
+			}
+		}
+		if (Estado_Bicicleta == 2)
+		{
+			Bicicleta_TX += movOffset * deltaTime * 2.0f;
+			if (Bicicleta_TX >= 60.0f)
+			{
+				Estado_Bicicleta = 3;
+			}
+		}
+		if (Estado_Bicicleta == 3)
+		{
+			Bicicleta_TX += movOffset * deltaTime * 2.0f;
+			Bicicleta_RZ -= movOffset * deltaTime * 2.0f;
+			if (Bicicleta_RZ <= 0.0f)
+			{
+				Estado_Bicicleta = 4;
+			}
+		}
+		if (Estado_Bicicleta == 4)
+		{
+			Bicicleta_TX += movOffset * deltaTime * 2.0f;
+			if (Bicicleta_TX >= 250.0f)
+			{
+				Bicicleta_TX = 0.0f;
+				Estado_Bicicleta = 0;
 			}
 		}
 
@@ -9354,7 +9490,7 @@ int main()
 
 		//Grandpa Rick
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(10.0f+movXAvatar1, 2.0f, 0.0f + movZAvatar1));
+		model = glm::translate(model, glm::vec3(20.0f+movXAvatar1, 2.0f, -40.0f + movZAvatar1));
 		model = glm::rotate(model, headingAvatar1 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		// MODELO PORTAL
 		glm::mat4 auxPortal(1.0);
@@ -9452,7 +9588,7 @@ int main()
 
 		// Ryougi Shiki
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(15.0f + movXAvatar2, 2.0f, 0.0f + movZAvatar2));
+		model = glm::translate(model, glm::vec3(25.0f + movXAvatar2, 2.0f, -40.0f + movZAvatar2));
 		model = glm::rotate(model, headingAvatar2 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(0.05f, 0.05f, 0.05f));
 		aux = model;

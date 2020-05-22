@@ -1,5 +1,5 @@
 # 3ds Max Wavefront OBJ Exporter v0.97b - (c)2007 guruware
-# File Created: 21.05.2020 17:28:23
+# File Created: 22.05.2020 03:43:06
 
 newmtl col_pelek
 	Ns 96.0784
@@ -36,8 +36,6 @@ newmtl uv_bn_depan
 	Kd 0.0116 0.0116 0.0116
 	Ks 0.0000 0.0000 0.0000
 	Ke 0.0000 0.0000 0.0000
-	map_Ka C:\Users\Casa3\Downloads\54-mountain_bike\Mountain_Bike\Textur\uv_bn_depan.png
-	map_Kd C:\Users\Casa3\Downloads\54-mountain_bike\Mountain_Bike\Textur\uv_bn_depan.png
 
 newmtl col_cakram
 	Ns 96.0784
@@ -122,8 +120,6 @@ newmtl uv_rangka
 	Kd 0.6084 0.6393 0.0015
 	Ks 0.2000 0.2000 0.2000
 	Ke 0.0000 0.0000 0.0000
-	map_Ka C:\Users\Casa3\Downloads\54-mountain_bike\Mountain_Bike\Textur\uv_rangka.png
-	map_Kd C:\Users\Casa3\Downloads\54-mountain_bike\Mountain_Bike\Textur\uv_rangka.png
 
 newmtl col_ttp_btl
 	Ns 96.0784
@@ -172,5 +168,3 @@ newmtl uv_ban_belakang
 	Kd 0.0116 0.0116 0.0116
 	Ks 0.0000 0.0000 0.0000
 	Ke 0.0000 0.0000 0.0000
-	map_Ka C:\Users\Casa3\Downloads\54-mountain_bike\Mountain_Bike\Textur\uv_ban_belakang.png
-	map_Kd C:\Users\Casa3\Downloads\54-mountain_bike\Mountain_Bike\Textur\uv_ban_belakang.png
