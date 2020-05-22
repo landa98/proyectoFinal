@@ -9005,29 +9005,30 @@ int main()
 
 
 		//
-		if(Bicicleta_TX < 10.0){
+		if (Bicicleta_TX < 10.0) {
 			Bicicleta_TX += 0.2;
 		}
-		if(Bicicleta_TX >= 10.0){
-			if(Bicicleta_RZ <=10){
-				Bicicleta_RZ +=2;
-				Bicicleta_TY +=0.05;
+		if (Bicicleta_TX >= 10.0) {
+			if (Bicicleta_RZ <= 10) {
+				Bicicleta_RZ += 2;
+				Bicicleta_TY += 0.1;
 			}
-			Bicicleta_TX +=0.2;
+			Bicicleta_TX += 0.2;
 		}
-		if(Bicicleta_TX>=15 && Bicicleta_TX < 25){
-			if(Bicicleta_RZ >=0){
-				Bicicleta_RZ -=2;
-				Bicicleta_TY -=0.05;
-			}else{
+		if (Bicicleta_TX >= 15 && Bicicleta_TX < 25) {
+			if (Bicicleta_RZ >= 0) {
+				Bicicleta_RZ -= 2;
+				Bicicleta_TY -= 0.1;
+			}
+			else {
 				Estado_Bicicleta = 1;
 			}
-			Bicicleta_TX +=0.2;
+			Bicicleta_TX += 0.2;
 		}
-		if (Estado_Bicicleta == 1){
-			if(Bicicleta_TX < 30.0){
+		if (Estado_Bicicleta == 1) {
+			if (Bicicleta_TX < 30.0) {
 				Bicicleta_TX += 0.2;
-			}		
+			}
 		}
 		//
 
